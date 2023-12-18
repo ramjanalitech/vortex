@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include vortex *.css
+recursive-include vortex *.csv
+recursive-include vortex *.html
+recursive-include vortex *.ico
+recursive-include vortex *.js
+recursive-include vortex *.json
+recursive-include vortex *.md
+recursive-include vortex *.png
+recursive-include vortex *.py
+recursive-include vortex *.svg
+recursive-include vortex *.txt
+recursive-exclude vortex *.pyc
