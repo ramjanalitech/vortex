@@ -11,7 +11,7 @@ import os
 @frappe.whitelist()
 def whatsapp_get_doc(doc,method=None):
 	doc= json.loads(doc)
-	document=frappe.get_doc("Whatsapp Settings")
+	document=frappe.get_doc("Whatsapp Setting")
 	sales_invoice_name = doc['name']
 	url=document.url
 	api_key = document.api_key
@@ -73,7 +73,7 @@ def get_sales_invoice_pdf_link(doc):
 	return url
 
 def pdfurl_generate(pdf_link,doctype,docname): 
-	base_path = frappe.db.get_single_value('Whatsapp Settings','base_path')
+	base_path = frappe.db.get_single_value('Whatsapp Setting','base_path')
 	bench_path = get_bench_path()
 	site_path = get_site_path().replace(".", "/sites",1)
 	base_path_ = bench_path + site_path
