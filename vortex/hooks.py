@@ -14,6 +14,11 @@ app_license = "MIT"
 # app_include_css = "/assets/vortex/css/vortex.css"
 # app_include_js = "/assets/vortex/js/vortex.js"
 
+doctype_js = {
+    "Sales Invoice": "js/sales_invoice.js"
+}
+
+
 # include js, css files in header of web template
 # web_include_css = "/assets/vortex/css/vortex.css"
 # web_include_js = "/assets/vortex/js/vortex.js"
