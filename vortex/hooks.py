@@ -18,6 +18,11 @@ doctype_js = {
     "Sales Invoice": "js/sales_invoice.js"
 }
 
+doc_events = {
+    "Payment Entry": {
+    "on_submit": "vortex.custom.payment_entry.payment_receipt"
+    },
+    }
 
 # include js, css files in header of web template
 # web_include_css = "/assets/vortex/css/vortex.css"

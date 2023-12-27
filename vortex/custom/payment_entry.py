@@ -8,27 +8,26 @@ from frappe.utils.file_manager import save_file
 import base64
 import os
 
-@frappe.whitelist()
-def whatsapp_get_doc(doc,method=None):
-	doc= json.loads(doc)
+def payment_receipt(doc,method=None):
 	document=frappe.get_doc("Whatsapp Setting")
-	sales_invoice_name = doc['name']
+	payment_entry_name = doc.name
 	url=document.url
 	api_key = document.api_key
 	campaign_name =document.campaign_name
-	destination = doc['contact_mobile']
-	pdf_link = get_sales_invoice_pdf_link(sales_invoice_name)
-	fileurl = pdfurl_generate(pdf_link,"Sales Invoice",sales_invoice_name)
+	phone_no = frappe.get_doc("Contact",doc.contact_person)
+	destination = phone_no.mobile_no
+	pdf_link = get_payment_entry_pdf_link(payment_entry_name)
+	fileurl = pdfurl_generate(pdf_link,"Payment Entry",payment_entry_name)
 	headers = {"Content-Type": "application/json"}
 	data = {
 				"apiKey": api_key,
 				"campaignName": campaign_name,
 				"destination": destination,
-				"userName": doc['customer'],
-				"source": "Sales Invoice",
+				"userName": doc.company,
+				"source": "Payment Entry",
 				"media": {
 				"url": fileurl,
-				"filename": doc['customer']
+				"filename": doc.company
 				},
 				"templateParams": [
 				],
@@ -39,25 +38,28 @@ def whatsapp_get_doc(doc,method=None):
 	req = requests.post(url, data=json.dumps(data), headers=headers)	
 	if req.status_code == 200:
 		new_doc = frappe.new_doc("Whatsapp Log")
-		new_doc.doctype_name = "Sales Invoice"
+		new_doc.doctype_name = "Payment Entry"
 		new_doc.url = str(fileurl)
 		new_doc.response = req
-		new_doc.document_name = sales_invoice_name
+		new_doc.document_name = payment_entry_name
 		new_doc.status = "Sent"
 		new_doc.save()
 		frappe.msgprint("Whatsapp SMS Sent ")
 	else:
 		new_doc = frappe.new_doc("Whatsapp Log")
-		new_doc.doctype_name = "Sales Invoice"
+		new_doc.doctype_name = "Payment Entry"
 		new_doc.url = str(fileurl)
 		new_doc.response = req
-		new_doc.document_name = sales_invoice_name
+		new_doc.document_name = payment_entry_name
 		new_doc.status = "Not Sent"
 		new_doc.save()
 		frappe.msgprint("Whatsapp SMS Not Sent ")
-	
-def get_sales_invoice_pdf_link(doc):
-	docname = frappe.get_doc("Sales Invoice",doc)
+
+		
+
+
+def get_payment_entry_pdf_link(doc):
+	docname = frappe.get_doc("Payment Entry",doc)	
 	key = docname.get_document_share_key( expires_on=None,no_expiry=True)
 	print_format = "Standard"
 	doctype = frappe.get_doc("DocType", docname)
@@ -65,10 +67,10 @@ def get_sales_invoice_pdf_link(doc):
 		if doctype.default_print_format:
 			print_format = doctype.default_print_format
 	else:
-		default_print_format = frappe.db.get_value("Property Setter",filters={"doc_type": "Sales Invoice","property": "default_print_format"},fieldname="value")
+		default_print_format = frappe.db.get_value("Property Setter",filters={"doc_type": "Payment Entry","property": "default_print_format"},fieldname="value")
 		print_format = default_print_format if default_print_format else print_format
 
-	link = get_pdf_link("Sales Invoice",docname.name,print_format=print_format)
+	link = get_pdf_link("Payment Entry",docname.name,print_format=print_format)
 	filename = f'{docname}.pdf'
 	url = f'{frappe.utils.get_url()}{link}&key={key}'
 	return url
