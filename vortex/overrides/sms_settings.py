@@ -4,6 +4,7 @@ from frappe import _, msgprint, throw
 from frappe.model.document import Document
 from frappe.utils import nowdate,cstr
 from erpnext.selling.doctype.sms_center.sms_center import SMSCenter
+from frappe.email.doctype.notification.notification import Notification
 
 
 @frappe.whitelist()
@@ -74,5 +75,12 @@ class custom_SMSCenter(SMSCenter):
 			receiver_list = self.get_receiver_nos()
 		if receiver_list:
 			send_custom_sms(receiver_list, cstr(self.message))
+
+class CustomNotification(Notification):
+	def send_sms(self, doc, context):
+		send_custom_sms(
+			receiver_list=self.get_receiver_list(doc, context),
+			msg=frappe.render_template(self.message, context),
+		)
 
 
