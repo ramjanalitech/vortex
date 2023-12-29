@@ -120,9 +120,9 @@ doc_events = {
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-#	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"SMS Center": "vortex.overrides.sms_settings.custom_SMSCenter"
+}
 
 # Document Events
 # ---------------
@@ -166,7 +166,7 @@ doc_events = {
 # ------------------------------
 #
 # override_whitelisted_methods = {
-#	"frappe.desk.doctype.event.event.get_events": "vortex.event.get_events"
+	# "frappe.desk.doctype.event.event.get_events": "vortex.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
