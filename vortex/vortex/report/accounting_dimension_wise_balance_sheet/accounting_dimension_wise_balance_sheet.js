@@ -41,14 +41,14 @@ frappe.query_reports["Accounting Dimension Wise Balance Sheet"] = {
 			"fieldname":"period_start_date",
 			"label": __("Start Date"),
 			"fieldtype": "Date",
-			"reqd": 1,
+			// "reqd": 1,
 			"depends_on": "eval:doc.filter_based_on == 'Date Range'"
 		},
 		{
 			"fieldname":"period_end_date",
 			"label": __("End Date"),
 			"fieldtype": "Date",
-			"reqd": 1,
+			// "reqd": 1,
 			"depends_on": "eval:doc.filter_based_on == 'Date Range'"
 		},
 		{
