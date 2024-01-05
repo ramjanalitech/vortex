@@ -36,6 +36,7 @@ def payment_receipt(doc,method=None):
 				]
 				}
 	req = requests.post(url, data=json.dumps(data), headers=headers)	
+	print("pdffffffffffffffffffffffffff",pdf_link)
 	if req.status_code == 200:
 		new_doc = frappe.new_doc("Whatsapp Log")
 		new_doc.doctype_name = "Payment Entry"
@@ -44,7 +45,7 @@ def payment_receipt(doc,method=None):
 		new_doc.document_name = payment_entry_name
 		new_doc.status = "Sent"
 		new_doc.save()
-		delete_file(doc,doc.name)
+		# delete_file(doc,doc.name)
 		frappe.msgprint("Whatsapp SMS Sent ")
 	else:
 		new_doc = frappe.new_doc("Whatsapp Log")
