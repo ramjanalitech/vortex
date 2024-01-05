@@ -1,0 +1,13 @@
+[
+	{
+		"doctype":"Custom Field",
+		"dt":"Notification",
+		"fieldname":"dltempid",
+		"name":"dltempid",
+		"module":"vortex",
+		"fieldtype":"Data",
+		"insert_after":"document_type",
+		"label":"dltempid",
+		"fieldname":"dltempid"
+	}
+]

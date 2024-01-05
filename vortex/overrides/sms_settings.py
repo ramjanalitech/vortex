@@ -8,7 +8,7 @@ from frappe.email.doctype.notification.notification import Notification
 
 
 @frappe.whitelist()
-def send_custom_sms(receiver_list, msg, sender_name="", success_msg=True):
+def send_custom_sms(receiver_list, msg, sender_name="", success_msg=True,dltempid=None):
 	import json
 
 	if isinstance(receiver_list, str):
@@ -25,12 +25,13 @@ def send_custom_sms(receiver_list, msg, sender_name="", success_msg=True):
 	}
 
 	if frappe.db.get_single_value("SMS Settings", "sms_gateway_url"):
-		send_via_gateway(arg)
+		send_via_gateway(arg,dltempid)
 	else:
 		msgprint(_("Please Update SMS Settings"))
 
 
-def send_via_gateway(arg):
+def send_via_gateway(arg,dltempid):
+
 	ss = frappe.get_doc("SMS Settings", "SMS Settings")
 	headers = get_headers(ss)
 	use_json = headers.get("Content-Type") == "application/json"
@@ -48,7 +49,7 @@ def send_via_gateway(arg):
 		list_parms=[]
 		dict_args = {}
 		params.update({"sender":args['sender']})
-		dict_args.update({"number":args['number'],"text":args['message'],"dlttempid":args['dlttempid']})
+		dict_args.update({"number":args['number'],"text":args['message'],"dlttempid":dltempid})
 		list_parms.append(dict_args)
 		params.update({"message":list_parms})
 		params.update({"messagetype": args['messagetype']})
@@ -81,6 +82,7 @@ class CustomNotification(Notification):
 		send_custom_sms(
 			receiver_list=self.get_receiver_list(doc, context),
 			msg=frappe.render_template(self.message, context),
+			dltempid=frappe.render_template(self.dltempid, context)
 		)
 
 
