@@ -8,7 +8,7 @@ from frappe.utils.file_manager import save_file
 import base64
 import os
 
-
+@frappe.whitelist()
 def payment_receipt(doc,method=None):
 	document=frappe.get_doc("Whatsapp Setting")
 	payment_entry_name = doc.name
@@ -17,7 +17,8 @@ def payment_receipt(doc,method=None):
 	campaign_name =document.campaign_name
 	phone_no = frappe.get_doc("Contact",doc.contact_person)
 	destination = phone_no.mobile_no
-	pdf_link = attach_paymententry_pdf(doc)
+	pdf_link = get_payment_entry_pdf_link(payment_entry_name)
+	fileurl = pdfurl_generate(pdf_link,"Payment Entry",payment_entry_name)
 	headers = {"Content-Type": "application/json"}
 	data = {
 				"apiKey": api_key,
@@ -26,7 +27,7 @@ def payment_receipt(doc,method=None):
 				"userName": doc.company,
 				"source": "Payment Entry",
 				"media": {
-				"url": pdf_link,
+				"url": fileurl,
 				"filename": doc.company
 				},
 				"templateParams": [
@@ -36,29 +37,24 @@ def payment_receipt(doc,method=None):
 				]
 				}
 	req = requests.post(url, data=json.dumps(data), headers=headers)	
-	print("pdffffffffffffffffffffffffff",pdf_link)
 	if req.status_code == 200:
 		new_doc = frappe.new_doc("Whatsapp Log")
 		new_doc.doctype_name = "Payment Entry"
-		new_doc.url = pdf_link
+		new_doc.url = str(fileurl)
 		new_doc.response = req
 		new_doc.document_name = payment_entry_name
 		new_doc.status = "Sent"
 		new_doc.save()
-		# delete_file(doc,doc.name)
-		frappe.msgprint("Whatsapp SMS Sent ")
+		frappe.throw("Whatsapp SMS Sent ")
 	else:
 		new_doc = frappe.new_doc("Whatsapp Log")
 		new_doc.doctype_name = "Payment Entry"
-		new_doc.url = pdf_link
+		new_doc.url = str(fileurl)
 		new_doc.response = req
 		new_doc.document_name = payment_entry_name
 		new_doc.status = "Not Sent"
 		new_doc.save()
 		frappe.msgprint("Whatsapp SMS Not Sent ")
-
-		
-
 
 def get_payment_entry_pdf_link(doc):
 	docname = frappe.get_doc("Payment Entry",doc)	
@@ -77,29 +73,23 @@ def get_payment_entry_pdf_link(doc):
 	url = f'{frappe.utils.get_url()}{link}&key={key}'
 	return url
 
-
-def attach_paymententry_pdf(doc, log=None):
-	filename = doc.name
-	pdf_content = frappe.get_print("Payment Entry",doc.name,doc=doc,no_letterhead=True,as_pdf=True)
-	pdf_file =  save_file(filename, pdf_content, "Payment Entry", doc.name, is_private=0)
+def pdfurl_generate(pdf_link,doctype,docname): 
 	base_path = frappe.db.get_single_value('Whatsapp Setting','base_path')
-	file_url = base_path + pdf_file.file_url
+	bench_path = get_bench_path()
+	site_path = get_site_path().replace(".", "/sites",1)
+	base_path_ = bench_path + site_path	
+	file_name = frappe.generate_hash("",5) + ".pdf"
+	cert_file_name = "cert_" + file_name	
+	headers = {'Content-Type': 'application/json'}
+	cert_url = pdf_link
+	certificate_response = requests.get(cert_url,headers=headers)	
+	cert_file_path = "/public/files/" + cert_file_name
+	cert_file = open(base_path_ + cert_file_path, "wb")
+	cert_file.write(certificate_response.content)
+	cert_file.close()
+	pdf_file = save_file(fname=cert_file_name, content=base64.b64encode(certificate_response.content),dt=doctype, dn=docname, decode=True, is_private=0)
+	file_url = base_path + pdf_file.file_url 	
 	return file_url
-
-def delete_file(doc, filename):
-    filename, extn = os.path.splitext(filename)
-
-    for file in frappe.get_all(
-        "File",
-        filters=[
-            ["attached_to_doctype", "=", doc.doctype],
-            ["attached_to_name", "=", doc.name],
-            ["file_name", "like", f"{filename}%"],
-            ["file_name", "like", f"%{extn}"],
-        ],
-        pluck="name",
-    ):
-        frappe.delete_doc("File", file, force=True, ignore_permissions=True)
 
 def get_pdf_link(doctype, docname, print_format="Standard", no_letterhead=0):
 	return "/api/method/frappe.utils.print_format.download_pdf?doctype={doctype}&name={docname}&format={print_format}&no_letterhead={no_letterhead}".format(
