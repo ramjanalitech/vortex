@@ -45,7 +45,7 @@ def payment_receipt(doc,method=None):
 		new_doc.document_name = payment_entry_name
 		new_doc.status = "Sent"
 		new_doc.save()
-		frappe.throw("Whatsapp SMS Sent ")
+		frappe.msgprint("Whatsapp SMS Sent ")
 	else:
 		new_doc = frappe.new_doc("Whatsapp Log")
 		new_doc.doctype_name = "Payment Entry"
