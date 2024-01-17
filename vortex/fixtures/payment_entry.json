@@ -1,0 +1,13 @@
+[
+	{
+		"doctype":"Custom Field",
+		"dt":"Payment Entry",
+		"fieldname":"sales_invoice",
+		"name":"vortex_sales_invoice",
+		"module":"vortex",
+		"fieldtype":"Data",
+		"insert_after":"paid_amount",
+		"label":"Sales Invoice",
+		"fieldname":"sales_invoice"
+	}
+]

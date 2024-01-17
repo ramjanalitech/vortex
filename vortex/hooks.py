@@ -166,9 +166,9 @@ override_doctype_class = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-	# "frappe.desk.doctype.event.event.get_events": "vortex.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "vortex.overrides.payment_entry.get_payment_entry"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
