@@ -22,6 +22,9 @@ doc_events = {
     "Payment Entry": {
     "on_submit": "vortex.custom.payment_entry.payment_receipt"
     },
+    "Payment Request": {
+    "on_submit": "vortex.custom.payment_request.payment_request"
+    }
     }
 
 # include js, css files in header of web template
