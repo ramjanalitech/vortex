@@ -18,6 +18,7 @@ def payment_receipt(doc,method=None):
 	phone_no = frappe.get_doc("Contact",doc.contact_person)
 	destination = phone_no.mobile_no
 	pdf_link = get_payment_entry_pdf_link(payment_entry_name)
+	template_params = str(doc.paid_amount)
 	fileurl = pdfurl_generate(pdf_link,"Payment Entry",payment_entry_name)
 	headers = {"Content-Type": "application/json"}
 	data = {
@@ -31,6 +32,7 @@ def payment_receipt(doc,method=None):
 				"filename": doc.company
 				},
 				"templateParams": [
+					template_params
 				],
 				"tags": [
 				"string"
