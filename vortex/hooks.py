@@ -24,6 +24,9 @@ doc_events = {
     },
     "Payment Request": {
     "on_submit": "vortex.custom.payment_request.payment_request"
+    },
+     "Delivery Note": {
+    "on_submit": "vortex.custom.delivery_note.delivery_note"
     }
     }
 

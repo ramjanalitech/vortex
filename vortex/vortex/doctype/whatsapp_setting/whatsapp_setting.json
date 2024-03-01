@@ -10,7 +10,8 @@
   "url",
   "api_key",
   "campaign_name",
-  "base_path"
+  "base_path",
+  "whatsapp_campaign"
  ],
  "fields": [
   {
@@ -36,12 +37,18 @@
    "fieldname": "base_path",
    "fieldtype": "Data",
    "label": "Base path"
+  },
+  {
+   "fieldname": "whatsapp_campaign",
+   "fieldtype": "Table",
+   "label": "Whatsapp Campaign",
+   "options": "Whatsapp Campaign"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-12-22 11:51:02.690637",
+ "modified": "2024-03-01 17:11:25.193960",
  "modified_by": "Administrator",
  "module": "Vortex",
  "name": "Whatsapp Setting",

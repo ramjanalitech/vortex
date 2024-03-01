@@ -1,0 +1,14 @@
+[
+	{
+		"doctype":"Custom Field",
+		"dt":"Delivery Note",
+		"fieldname":"sales_invoice",
+		"name":"delivery_sales_invoice",
+		"module":"vortex",
+		"fieldtype":"Link",
+		"insert_after":"company",
+		"label":"Sales Invoice",
+		"fieldname":"sales_invoice",
+        "options": "Sales Invoice"
+    	}
+]
