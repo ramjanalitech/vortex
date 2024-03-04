@@ -14,7 +14,11 @@ def payment_request(doc,method=None):
 	payment_entry_name = doc.name
 	url=document.url
 	api_key = document.api_key
-	campaign_name =document.campaign_name
+	whatsapp_camapaign = frappe.get_doc('Whatsapp Setting')
+	for camp_name in whatsapp_camapaign.whatsapp_campaign:
+		if camp_name.campaign_doctype == "Payment Request":
+			payment_campaign = camp_name.campaign_name
+	campaign_name = payment_campaign
 	sales_order = frappe.get_doc("Sales Order",doc.reference_name)
 	phone_no = sales_order.contact_mobile
 	destination = phone_no
@@ -50,7 +54,6 @@ def payment_request(doc,method=None):
 	else:
 		new_doc = frappe.new_doc("Whatsapp Log")
 		new_doc.doctype_name = "Payment Entry"
-		new_doc.url = str(fileurl)
 		new_doc.response = req
 		new_doc.document_name = payment_entry_name
 		new_doc.status = "Not Sent"
