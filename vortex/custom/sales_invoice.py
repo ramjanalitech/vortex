@@ -15,7 +15,11 @@ def whatsapp_get_doc(doc,method=None):
 	sales_invoice_name = doc['name']
 	url=document.url
 	api_key = document.api_key
-	campaign_name =document.campaign_name
+	whatsapp_camapaign = frappe.get_doc('Whatsapp Setting')
+	for camp_name in whatsapp_camapaign.whatsapp_campaign:
+		if camp_name.campaign_doctype == "Sales Order":
+			payment_campaign = camp_name.campaign_name
+	campaign_name = payment_campaign
 	destination = doc['contact_mobile']
 	pdf_link = get_sales_invoice_pdf_link(sales_invoice_name)
 	fileurl = pdfurl_generate(pdf_link,"Sales Invoice",sales_invoice_name)
