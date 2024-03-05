@@ -9,7 +9,6 @@
  "field_order": [
   "url",
   "api_key",
-  "campaign_name",
   "base_path",
   "whatsapp_campaign"
  ],
@@ -20,12 +19,6 @@
    "in_list_view": 1,
    "label": "API Key",
    "reqd": 1
-  },
-  {
-   "fieldname": "campaign_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Campaign Name"
   },
   {
    "fieldname": "url",
@@ -47,7 +40,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-03-04 15:47:37.438544",
+ "modified": "2024-03-05 18:19:17.794226",
  "modified_by": "Administrator",
  "module": "Vortex",
  "name": "Whatsapp Setting",

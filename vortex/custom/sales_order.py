@@ -9,30 +9,29 @@ import base64
 import os
 
 @frappe.whitelist()
-def payment_request(doc,method=None):
+def sales_order(doc,method=None):
 	document=frappe.get_doc("Whatsapp Setting")
 	payment_entry_name = doc.name
 	url=document.url
 	api_key = document.api_key
 	whatsapp_camapaign = frappe.get_doc('Whatsapp Setting')
 	for camp_name in whatsapp_camapaign.whatsapp_campaign:
-		if camp_name.campaign_doctype == "Payment Request":
+		if camp_name.campaign_doctype == "Sales Order":
 			payment_campaign = camp_name.campaign_name
 	campaign_name = payment_campaign
-	sales_order = frappe.get_doc("Sales Order",doc.reference_name)
-	phone_no = sales_order.contact_mobile
+	phone_no = doc.contact_mobile
 	destination = phone_no
-	template_params = str(doc.grand_total)
+	template_params = str(doc.total)
 	headers = {"Content-Type": "application/json"}
 	data = {
 				"apiKey": api_key,
 				"campaignName": campaign_name,
 				"destination": destination,
-				"userName": doc.party,
-				"source": "Payment Request",
+				"userName": doc.customer,
+				"source": "Sales Order",
 				"media": {
 				"url": "",
-				"filename": doc.party
+				"filename": doc.customer
 				},
 				"templateParams": [
 					template_params
@@ -44,7 +43,7 @@ def payment_request(doc,method=None):
 	req = requests.post(url, data=json.dumps(data), headers=headers)	
 	if req.status_code == 200:
 		new_doc = frappe.new_doc("Whatsapp Log")
-		new_doc.doctype_name = "Payment Request"
+		new_doc.doctype_name = "Payment Entry"
 		new_doc.url = ""
 		new_doc.response = req
 		new_doc.document_name = payment_entry_name
@@ -53,7 +52,7 @@ def payment_request(doc,method=None):
 		frappe.msgprint("Whatsapp SMS Sent ")
 	else:
 		new_doc = frappe.new_doc("Whatsapp Log")
-		new_doc.doctype_name = "Payment Request"
+		new_doc.doctype_name = "Payment Entry"
 		new_doc.response = req
 		new_doc.document_name = payment_entry_name
 		new_doc.status = "Not Sent"

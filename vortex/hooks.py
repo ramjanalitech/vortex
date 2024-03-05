@@ -27,6 +27,9 @@ doc_events = {
     },
      "Delivery Note": {
     "on_submit": "vortex.custom.delivery_note.delivery_note"
+    },
+     "Sales Order": {
+    "on_submit": "vortex.custom.sales_order.sales_order"
     }
     }
 

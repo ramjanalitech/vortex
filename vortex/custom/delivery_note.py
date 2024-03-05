@@ -14,13 +14,15 @@ def delivery_note(doc,method=None):
 	delivery_note_name = doc.get('name')
 	url=document.url
 	api_key = document.api_key
-	campaign_name =document.campaign_name
+	whatsapp_camapaign = frappe.get_doc('Whatsapp Setting')
+	for camp_name in whatsapp_camapaign.whatsapp_campaign:
+		if camp_name.campaign_doctype == "Sales Order":
+			payment_campaign = camp_name.campaign_name
+	campaign_name = payment_campaign
 	destination = doc.get('contact_mobile')
 	template_param = str(doc.get('grand_total')) 
 	pdf_link = get_sales_invoice_pdf_link(delivery_note_name)
 	fileurl = pdfurl_generate(pdf_link,"Delivery Note",delivery_note_name)
-	print("fileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",pdf_link)
-	frappe.throw("hi")
 	headers = {"Content-Type": "application/json"}
 	data = {
                 "apiKey": api_key,
