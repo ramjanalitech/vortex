@@ -16,7 +16,7 @@ def delivery_note(doc,method=None):
 	api_key = document.api_key
 	whatsapp_camapaign = frappe.get_doc('Whatsapp Setting')
 	for camp_name in whatsapp_camapaign.whatsapp_campaign:
-		if camp_name.campaign_doctype == "Sales Order":
+		if camp_name.campaign_doctype == "Delivery Note":
 			payment_campaign = camp_name.campaign_name
 	campaign_name = payment_campaign
 	destination = doc.get('contact_mobile')

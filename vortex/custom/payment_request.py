@@ -23,6 +23,7 @@ def payment_request(doc,method=None):
 	phone_no = sales_order.contact_mobile
 	destination = phone_no
 	template_params = str(doc.grand_total)
+	template_url = doc.payment_url
 	headers = {"Content-Type": "application/json"}
 	data = {
 				"apiKey": api_key,
@@ -35,7 +36,7 @@ def payment_request(doc,method=None):
 				"filename": doc.party
 				},
 				"templateParams": [
-					template_params
+					template_params,template_url
 				],
 				"tags": [
 				"string"
