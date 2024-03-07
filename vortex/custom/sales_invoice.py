@@ -10,7 +10,6 @@ import os
 
 @frappe.whitelist()
 def whatsapp_get_doc(doc,method=None):
-	print("doccccccccccccccccccc",doc)
 	doc= json.loads(doc)
 	document=frappe.get_doc("Whatsapp Setting")
 	sales_invoice_name = doc['name']
@@ -23,7 +22,7 @@ def whatsapp_get_doc(doc,method=None):
 	campaign_name = payment_campaign
 	destination = doc['contact_mobile']
 	pdf_link = get_sales_invoice_pdf_link(sales_invoice_name)
-	template_params = doc['name']
+	template_params = doc['sales_order']
 	fileurl = pdfurl_generate(pdf_link,"Sales Invoice",sales_invoice_name)
 	headers = {"Content-Type": "application/json"}
 	data = {
