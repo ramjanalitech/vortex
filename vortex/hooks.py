@@ -131,7 +131,8 @@ doc_events = {
 
 override_doctype_class = {
 	"SMS Center": "vortex.overrides.sms_settings.custom_SMSCenter",
-    "Notification": "vortex.overrides.sms_settings.CustomNotification"
+    "Notification": "vortex.overrides.sms_settings.CustomNotification",
+    "Payment Request":"vortex.overrides.payment_request.CustomPaymentRequest"
 }
 
 # Document Events
