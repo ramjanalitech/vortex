@@ -1,15 +1,3 @@
-# from erpnext.accounts.doctype.payment_request.payment_request import PaymentRequest  
-
-# class PaymentRequest(Document):
-#     def get_payment_url(self):
-#         # Your custom implementation here
-#         print("/////////////////",self)
-
-
-# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
-# For license information, please see license.txt
-
-
 import json
 
 import frappe
