@@ -22,8 +22,10 @@ def whatsapp_get_doc(doc,method=None):
 	campaign_name = payment_campaign
 	destination = doc['contact_mobile']
 	pdf_link = get_sales_invoice_pdf_link(sales_invoice_name)
-	template_params = doc['sales_order']
+	frappe.msgprint(f"pdf_link: {pdf_link}")
+	template_params = []
 	fileurl = pdfurl_generate(pdf_link,"Sales Invoice",sales_invoice_name)
+	frappe.msgprint(f"fileurl: {fileurl}")
 	headers = {"Content-Type": "application/json"}
 	data = {
 				"apiKey": api_key,
@@ -75,6 +77,7 @@ def get_sales_invoice_pdf_link(doc):
 		print_format = default_print_format if default_print_format else print_format
 
 	link = get_pdf_link("Sales Invoice",docname.name,print_format=print_format)
+	frappe.msgprint(f"link: {link}")
 	filename = f'{docname}.pdf'
 	url = f'{frappe.utils.get_url()}{link}&key={key}'
 	return url

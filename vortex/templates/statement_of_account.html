@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ translations["Statement of Account"] }}</title>
+    <style>
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-muted { color: #6c757d; }
+        .table { width: 100%; border-collapse: collapse; }
+        .table, .table th, .table td { border: 1px solid black; }
+        .table th, .table td { padding: 8px; text-align: left; }
+        .overflow-wrap-anywhere { overflow-wrap: anywhere; }
+    </style>
+</head>
+<body>
+    <h2 class="text-center">{{ translations["Statement of Account"] }}</h2>
+    <h4 class="text-center">
+        {% if filters.party_name %}
+            {{ filters.party_name }}
+        {% elif filters.party and filters.party|length %}
+            {{ filters.party }}
+        {% elif filters.account %}
+            {{ filters.account }}
+        {% endif %}
+    </h4>
+    <h6 class="text-center">
+        {% if filters.tax_id %}
+        {{ translations["Tax Id: "] }} {{ filters.tax_id }}
+        {% endif %}
+    </h6>
+    <h5 class="text-center">
+        {{ frappe.utils.formatdate(filters.from_date) }} {{ translations["to"] }} {{ frappe.utils.formatdate(filters.to_date) }}
+    </h5>
+    <hr>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="width: 12%">{{ translations["Date"] }}</th>
+                <th style="width: 15%">{{ translations["Reference"] }}</th>
+                <th style="width: 25%">{{ translations["Remarks"] }}</th>
+                <th style="width: 15%">{{ translations["Debit"] }}</th>
+                <th style="width: 15%">{{ translations["Credit"] }}</th>
+                <th style="width: 18%">{{ translations["Balance (Dr - Cr)"] }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in data %}
+                <tr>
+                    {% if entry.posting_date %}
+                        <td>{{ frappe.utils.formatdate(entry.posting_date) }}</td>
+                        <td>{{ entry.voucher_type }}<br>{{ entry.voucher_no }}</td>
+                        {% set longest_word = entry.remarks %}
+                        <td {% if longest_word | length > 45 %} class="overflow-wrap-anywhere" {% endif %}>
+                            <span>
+                            {% if not (filters.party or filters.account) %}
+                                {{ entry.party or entry.account }}<br>
+                            {% endif %}
+                            <br>{{ translations["Remarks"] }}: {{ entry.remarks }}
+                            {% if entry.bill_no %}
+                                <br>{{ translations["Supplier Invoice No"] }}: {{ entry.bill_no }}
+                            {% endif %}
+                            </span>
+                        </td>
+                        <td style="text-align: right">
+                            {{ format_currency(entry.debit, filters.presentation_currency or entry.account_currency) }}
+                        </td>
+                        <td style="text-align: right">
+                            {{ format_currency(entry.credit, filters.presentation_currency or entry.account_currency) }}
+                        </td>
+                    {% else %}
+                        <td></td>
+                        <td></td>
+                        <td><b>{{ frappe.format(entry.account, {'fieldtype': 'Link'}) or "&nbsp;" }}</b></td>
+                        <td style="text-align: right">
+                            {{ entry.account and format_currency(entry.debit, filters.presentation_currency or entry.account_currency) }}
+                        </td>
+                        <td style="text-align: right">
+                            {{ entry.account and format_currency(entry.credit, filters.presentation_currency or entry.account_currency) }}
+                        </td>
+                    {% endif %}
+                    <td style="text-align: right">
+                        {{ format_currency(entry.balance, filters.presentation_currency or entry.account_currency) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-right text-muted">Printed On {{ frappe.utils.formatdate(frappe.utils.now_datetime()) }}</p>
+</body>
+</html>

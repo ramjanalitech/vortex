@@ -10,7 +10,8 @@
   "url",
   "api_key",
   "base_path",
-  "whatsapp_campaign"
+  "whatsapp_campaign",
+  "whatsapp_campaign_report"
  ],
  "fields": [
   {
@@ -35,12 +36,18 @@
    "fieldtype": "Table",
    "label": "Whatsapp Campaign",
    "options": "Whatsapp Campaign"
+  },
+  {
+   "fieldname": "whatsapp_campaign_report",
+   "fieldtype": "Table",
+   "label": "Whatsapp Campaign Report",
+   "options": "Whatsapp Campaign Report"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-03-05 18:19:17.794226",
+ "modified": "2024-07-11 18:02:22.172983",
  "modified_by": "Administrator",
  "module": "Vortex",
  "name": "Whatsapp Setting",

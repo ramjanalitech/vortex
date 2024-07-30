@@ -2,9 +2,9 @@ from . import __version__ as app_version
 
 app_name = "vortex"
 app_title = "Vortex"
-app_publisher = "8848digital"
+app_publisher = "RamjanAli"
 app_description = "Whatsapp message"
-app_email = "prateek@8848digital.com"
+app_email = "ramjanlal.tech@gmail.com"
 app_license = "MIT"
 
 # Includes in <head>
@@ -15,7 +15,9 @@ app_license = "MIT"
 # app_include_js = "/assets/vortex/js/vortex.js"
 
 doctype_js = {
-    "Sales Invoice": "js/sales_invoice.js"
+    "Sales Invoice": "js/sales_invoice.js",
+    "Process Statement Of Accounts": "js/process_statement_of_accounts.js"
+    #"whatsapp report": "js/whatsapp_report.js"
 }
 
 doc_events = {
@@ -75,8 +77,8 @@ doc_events = {
 
 # add methods and filters to jinja environment
 # jinja = {
-#	"methods": "vortex.utils.jinja_methods",
-#	"filters": "vortex.utils.jinja_filters"
+# 	"methods": "vortex.utils.jinja_methods",
+# 	"filters": "vortex.utils.jinja_filters"
 # }
 
 # Installation
@@ -177,7 +179,10 @@ override_doctype_class = {
 # ------------------------------
 #
 override_whitelisted_methods = {
-	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "vortex.overrides.payment_entry.get_payment_entry"
+	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "vortex.overrides.payment_entry.get_payment_entry",
+    "frappe.frappe.api.search_serial_number": "frappe.api.search_serial_number",
+    "vortex.custom.process_statement_of_accounts.whatsapp": "vortex.custom.process_statement_of_accounts.whatsapp"
+
 }
 #
 # each overriding function accepts a `data` argument;

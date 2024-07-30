@@ -1,0 +1,34 @@
+<!-- general_ledger.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>General Ledger Report</title>
+</head>
+<body>
+    <h1>General Ledger Report</h1>
+    <p>Filters:</p>
+    <ul>
+        {% for key, value in filters.items() %}
+            <li>{{ key }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+    <table>
+        <thead>
+            <tr>
+                {% for column in columns %}
+                    <th>{{ column.label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    {% for column in columns %}
+                        <td>{{ row[column.fieldname] }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
