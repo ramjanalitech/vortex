@@ -7,9 +7,7 @@
 		"module":"vortex",
 		"fieldtype":"Data",
 		"insert_after":"company",
-		"label":"Sales Invoice",
-        "options": "Sales Invoice",
-        "fetch_from": "customer.mobile_no",
-        "read_only": 1
+		"label":"Mobile No",
+        "fetch_from": "customer.mobile_no"
     	}
 ]
