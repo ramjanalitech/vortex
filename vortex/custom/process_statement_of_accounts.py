@@ -510,14 +510,14 @@ def send_auto_email():
 
 #             # Fetching customer details
 #             customer_doc = frappe.get_doc("Customer", customer)
-#             whatsapp_number = customer_doc.mobile_no  # assuming you have a field for WhatsApp number
+#             mobile_number = customer_doc.mobile_no  # assuming you have a field for WhatsApp number
 
-#             if whatsapp_number:
+#             if mobile_number:
 #                 headers = {"Content-Type": "application/json"}
 #                 data = {
 #                     "apiKey": api_key,
 #                     "campaignName": "monthly_ledger_new",
-#                     "destination": whatsapp_number,
+#                     "destination": mobile_number,
 #                     "userName": customer_doc.customer_name,  # Use actual customer name
 #                     "source": "ERPNext",
 #                     "media": {
@@ -564,13 +564,13 @@ def send_auto_email():
 # 			# frappe.msgprint(f"fvkjndfk: {file_url}")
 #             # Fetching customer details
 #             customer_doc = frappe.get_doc("Customer", customer)
-#             whatsapp_number = customer_doc.mobile_no  # assuming you have a field for WhatsApp number
-#             if whatsapp_number:
+#             mobile_number = customer_doc.mobile_no  # assuming you have a field for WhatsApp number
+#             if mobile_number:
 #                 headers = {"Content-Type": "application/json"}
 #                 data = {
 #                     "apiKey": api_key,
 #                     "campaignName": "monthly_ledger_new",
-#                     "destination": whatsapp_number,
+#                     "destination": mobile_number,
 #                     "userName": customer_doc.customer_name,  # Use actual customer name
 #                     "source": "ERPNext",
 #                     "media": {
@@ -583,7 +583,7 @@ def send_auto_email():
 # 						]
 #                 }
 #                 response = requests.post(url, headers=headers, data=json.dumps(data))
-#                 frappe.msgprint(f"WhatsApp message sent to {customer_doc.customer_name}: {response.json()} {whatsapp_number} {file_url}")
+#                 frappe.msgprint(f"WhatsApp message sent to {customer_doc.customer_name}: {response.json()} {mobile_number} {file_url}")
 #         return True
 #     else:
 #         frappe.msgprint("No report generated to send via WhatsApp.")
@@ -636,14 +636,14 @@ def pdfurl_generate(pdf_link,doctype,docname):
 
 #             # Fetching customer details
 #             customer_doc = frappe.get_doc("Customer", customer)
-#             whatsapp_number = customer_doc.mobile_no  # assuming you have a field for WhatsApp number
+#             mobile_number = customer_doc.mobile_no  # assuming you have a field for WhatsApp number
 
-#             if whatsapp_number:
+#             if mobile_number:
 #                 headers = {"Content-Type": "application/json"}
 #                 data = {
 #                     "apiKey": api_key,
 #                     "campaignName": "monthly_ledger_new",
-#                     "destination": whatsapp_number,
+#                     "destination": mobile_number,
 #                     "userName": customer_doc.customer_name,  # Use actual customer name
 #                     "source": "ERPNext",
 #                     "media": {
@@ -659,10 +659,10 @@ def pdfurl_generate(pdf_link,doctype,docname):
 
 #                     if response.status_code == 200:
 #                         status = "Sent"
-#                         msg = f"WhatsApp message sent to {customer_doc.customer_name} ({whatsapp_number})."
+#                         msg = f"WhatsApp message sent to {customer_doc.customer_name} ({mobile_number})."
 #                     else:
 #                         status = "Not Sent"
-#                         msg = f"Failed to send WhatsApp message to {customer_doc.customer_name} ({whatsapp_number}). Error: {response_json.get('errorMessage', 'Unknown error')}"
+#                         msg = f"Failed to send WhatsApp message to {customer_doc.customer_name} ({mobile_number}). Error: {response_json.get('errorMessage', 'Unknown error')}"
 
 #                     frappe.msgprint(msg)
                     
@@ -675,7 +675,7 @@ def pdfurl_generate(pdf_link,doctype,docname):
 #                     new_doc.status = status
 #                     new_doc.save()
 #                 except Exception as e:
-#                     frappe.msgprint(f"An error occurred while sending WhatsApp message to {customer_doc.customer_name} ({whatsapp_number}). Error: {str(e)}")
+#                     frappe.msgprint(f"An error occurred while sending WhatsApp message to {customer_doc.customer_name} ({mobile_number}). Error: {str(e)}")
                     
 #         return True
 #     else:
@@ -710,14 +710,14 @@ def whatsapp(document_name):
 
             # Fetching customer details
             customer_doc = frappe.get_doc("Customer", customer)
-            whatsapp_number = customer_doc.mobile_no  # assuming you have a field for WhatsApp number
+            mobile_number = customer_doc.mobile_no  # assuming you have a field for WhatsApp number
 
-            if whatsapp_number:
+            if mobile_number:
                 headers = {"Content-Type": "application/json"}
                 data = {
                     "apiKey": api_key,
                     "campaignName": "monthly_ledger_new",
-                    "destination": whatsapp_number,
+                    "destination": customer_doc.mobile_no,
                     "userName": customer_doc.customer_name,  # Use actual customer name
                     "source": "ERPNext",
                     "media": {
@@ -733,10 +733,10 @@ def whatsapp(document_name):
 
                     if response.status_code == 200:
                         status = "Sent"
-                        msg = f"WhatsApp message sent to {customer_doc.customer_name} ({whatsapp_number})."
+                        msg = f"WhatsApp message sent to {customer_doc.customer_name} ({mobile_number})."
                     else:
                         status = "Not Sent"
-                        msg = f"Failed to send WhatsApp message to {customer_doc.customer_name} ({whatsapp_number}). Error: {response_json.get('errorMessage', 'Unknown error')}"
+                        msg = f"Failed to send WhatsApp message to {customer_doc.customer_name} ({mobile_number}). Error: {response_json.get('errorMessage', 'Unknown error')}"
 
                     frappe.msgprint(msg)
                     
@@ -749,7 +749,7 @@ def whatsapp(document_name):
                     new_doc.status = status
                     new_doc.save()
                 except Exception as e:
-                    frappe.msgprint(f"An error occurred while sending WhatsApp message to {customer_doc.customer_name} ({whatsapp_number}). Error: {str(e)}")
+                    frappe.msgprint(f"An error occurred while sending WhatsApp message to {customer_doc.customer_name} ({mobile_number}). Error: {str(e)}")
                     
         return True
     else:

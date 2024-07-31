@@ -1,0 +1,15 @@
+[
+	{
+		"doctype":"Custom Field",
+		"dt":"Process Statement Of Accounts Customer",
+		"fieldname":"mobile_no",
+		"name":"mobile_no",
+		"module":"vortex",
+		"fieldtype":"Data",
+		"insert_after":"company",
+		"label":"Sales Invoice",
+        "options": "Sales Invoice",
+        "fetch_from": "customer.mobile_no",
+        "read_only": 1
+    	}
+]
