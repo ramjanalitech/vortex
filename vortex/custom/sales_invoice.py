@@ -22,10 +22,8 @@ def whatsapp_get_doc(doc,method=None):
 	campaign_name = payment_campaign
 	destination = doc['contact_mobile']
 	pdf_link = get_sales_invoice_pdf_link(sales_invoice_name)
-	frappe.msgprint(f"pdf_link: {pdf_link}")
-	template_params = []
+	# template_params = doc['sales_order']
 	fileurl = pdfurl_generate(pdf_link,"Sales Invoice",sales_invoice_name)
-	frappe.msgprint(f"fileurl: {fileurl}")
 	headers = {"Content-Type": "application/json"}
 	data = {
 				"apiKey": api_key,
@@ -38,7 +36,7 @@ def whatsapp_get_doc(doc,method=None):
 				"filename": doc['customer']
 				},
 				"templateParams": [
-					template_params
+
 				],
 				"tags": [
 				"string"
@@ -77,7 +75,6 @@ def get_sales_invoice_pdf_link(doc):
 		print_format = default_print_format if default_print_format else print_format
 
 	link = get_pdf_link("Sales Invoice",docname.name,print_format=print_format)
-	frappe.msgprint(f"link: {link}")
 	filename = f'{docname}.pdf'
 	url = f'{frappe.utils.get_url()}{link}&key={key}'
 	return url
@@ -104,4 +101,3 @@ def pdfurl_generate(pdf_link,doctype,docname):
 def get_pdf_link(doctype, docname, print_format="Standard", no_letterhead=0):
 	return "/api/method/frappe.utils.print_format.download_pdf?doctype={doctype}&name={docname}&format={print_format}&no_letterhead={no_letterhead}".format(
 		doctype=doctype, docname=docname, print_format=print_format, no_letterhead=no_letterhead)
- 
