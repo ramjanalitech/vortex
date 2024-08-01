@@ -99,4 +99,25 @@ def pdfurl_generate(pdf_link,doctype,docname):
 def get_pdf_link(doctype, docname, print_format="Standard", no_letterhead=0):
 	return "/api/method/frappe.utils.print_format.download_pdf?doctype={doctype}&name={docname}&format={print_format}&no_letterhead={no_letterhead}".format(
 		doctype=doctype, docname=docname, print_format=print_format, no_letterhead=no_letterhead)
+
+
+@frappe.whitelist(allow_guest=True)
+def search_serial_number(serial_number):
+    if not serial_number:
+        return []
+
+    # Use exact match for serial number
+    serial_numbers = frappe.get_all('Serial No', filters={'name': serial_number}, fields=['name', 'description', 'item_code', 'warranty_expiry_date'])
+
+    results = []
+    for sn in serial_numbers:
+        item = frappe.get_doc('Item', sn['item_code'])
+        results.append({
+            'serial_number': sn['name'],
+            'name': item.item_name,
+            'description': item.description or '',
+            'warranty_expiry_date': sn['warranty_expiry_date']
+        })
+
+    return results
  
