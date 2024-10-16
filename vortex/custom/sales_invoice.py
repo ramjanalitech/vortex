@@ -283,6 +283,11 @@ def send_invoice_whatsapp(invoice, api_key, url):
         # Check response and log status
         status = "Sent" if response.status_code == 200 else "Not Sent"
         log_whatsapp_status(invoice['name'], file_url, response.text, status)
+        # Notify user if successfully sent
+        if status == "Sent":
+            frappe.msgprint("WhatsApp SMS Sent")
+        else:
+            frappe.msgprint(f"Failed to send WhatsApp SMS for {invoice['name']}")
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), f"Error sending WhatsApp message for {invoice['name']}")
