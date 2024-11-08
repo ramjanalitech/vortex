@@ -419,7 +419,10 @@ def send_invoice_whatsapp(invoice, api_key, url):
 
         response = requests.post(url, data=json.dumps(data), headers=headers)
         status = "Sent" if response.status_code == 200 else "Not Sent"
-        log_whatsapp_status(invoice['name'], file_url, response.text, status)
+        # log_whatsapp_status(invoice['name'], file_url, response.text, status)
+        # Example call with the additional customer parameter
+        log_whatsapp_status(invoice['name'], file_url, response.text, status, invoice['customer'])
+
 
         if status == "Sent":
             frappe.msgprint(f"WhatsApp SMS sent successfully for {invoice['name']}")
@@ -462,12 +465,25 @@ def pdfurl_generate(pdf_link, doctype, docname):
                            dt=doctype, dn=docname, decode=True, is_private=0)
     return frappe.utils.get_url() + saved_file.file_url
 
+# # Function to log the status of the WhatsApp message
+# def log_whatsapp_status(docname, file_url, response, status):
+#     new_log = frappe.new_doc("Whatsapp Log")
+#     new_log.doctype_name = "Sales Invoice"
+#     new_log.url = file_url
+#     new_log.response = response
+#     new_log.document_name = docname
+#     new_log.status = status
+#     new_log.save()
+
 # Function to log the status of the WhatsApp message
-def log_whatsapp_status(docname, file_url, response, status):
+def log_whatsapp_status(docname, file_url, response, status, customer):
+    """Log the WhatsApp message status with customer name."""
     new_log = frappe.new_doc("Whatsapp Log")
     new_log.doctype_name = "Sales Invoice"
+    new_log.document_name = docname
+    new_log.customer = customer  # Adding customer name to the log
     new_log.url = file_url
     new_log.response = response
-    new_log.document_name = docname
     new_log.status = status
     new_log.save()
+
