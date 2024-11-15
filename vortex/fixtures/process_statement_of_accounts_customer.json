@@ -1,0 +1,12 @@
+[
+	{
+		"doctype":"Custom Field",
+		"dt":"Process Statement Of Accounts",
+		"fieldname":"fetch_customer_for_whatsapp_send",
+		"name":"fetch_customer_for_whatsapp_send",
+		"module":"vortex",
+		"fieldtype":"Button",
+		"insert_after":"show_net_values_in_party_account",
+		"label":"Fetch Customer For Whatsapp Send"
+	}
+]
