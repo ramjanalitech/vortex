@@ -589,6 +589,7 @@ def send_auto_email():
 #         frappe.msgprint("No report generated to send via WhatsApp.")
 #         return False
 
+@frappe.whitelist()
 def pdfurl_generate(pdf_link,doctype,docname): 
 	base_path = frappe.db.get_single_value('Whatsapp Setting','base_path')
 	bench_path = get_bench_path()
@@ -755,4 +756,29 @@ def whatsapp(document_name):
     else:
         frappe.msgprint("No report generated to send via WhatsApp.")
         return False
+
+
+	
+@frappe.whitelist()
+def fetch_customers():
+    # Fetch customers with a primary mobile number
+    customers = frappe.get_list(
+        "Customer",
+        fields=["name", "customer_name", "mobile_no"],
+        filters=[["mobile_no", "!=", ""]]  # Ensure mobile_no is not empty
+    )
+
+    customer_list = [
+        {
+            "name": customer.name,
+            "customer_name": customer.customer_name,
+            "primary_mobile": customer.mobile_no,
+        }
+        for customer in customers
+    ]
+
+    if not customer_list:
+        frappe.throw(_("No Customers with a Primary Mobile Number found."))
+
+    return customer_list
 

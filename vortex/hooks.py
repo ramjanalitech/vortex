@@ -191,8 +191,8 @@ override_whitelisted_methods = {
 	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "vortex.overrides.payment_entry.get_payment_entry",
     "vortex.custom.sales_order.search_serial_number": "vortex.custom.sales_order.search_serial_number",
     "vortex.custom.general_ledger.whatsapp_get_doc": "vortex.custom.general_ledger.whatsapp_get_doc",
-    "vortex.custom.process_statement_of_accounts.whatsapp": "vortex.custom.process_statement_of_accounts.whatsapp"
-
+    "vortex.custom.process_statement_of_accounts.whatsapp": "vortex.custom.process_statement_of_accounts.whatsapp",
+    "vortex.custom.process_statement_of_accounts.fetch_customers": "vortex.custom.process_statement_of_accounts.fetch_customers"
 }
 #
 # each overriding function accepts a `data` argument;

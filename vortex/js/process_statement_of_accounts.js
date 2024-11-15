@@ -27,4 +27,29 @@ frappe.ui.form.on('Process Statement Of Accounts', {
             });
         }
     },
+	fetch_customer_for_whatsapp_send: function (frm) {
+		frappe.call({
+			method: "vortex.custom.process_statement_of_accounts.fetch_customers",
+			callback: function (r) {
+				if (!r.exc) {
+					if (r.message.length) {
+						frm.clear_table("customers");
+						for (const customer of r.message) {
+							var row = frm.add_child("customers");
+							row.customer = customer.name;
+							row.customer_name = customer.customer_name;
+							row.mobile_no = customer.primary_mobile; // Add primary mobile number
+						}
+						frm.refresh_field("customers");
+					} else {
+						frappe.msgprint({
+							title: __("No Customers Found"),
+							indicator: "red",
+							message: __("No Customers with a Primary Mobile Number found."),
+						});
+					}
+				}
+			},
+		});
+	},	
 });
