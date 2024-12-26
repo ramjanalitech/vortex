@@ -8,7 +8,16 @@
 		"fieldtype":"Link",
 		"insert_after":"company",
 		"label":"Sales Invoice",
-		"fieldname":"sales_invoice",
         "options": "Sales Invoice"
-    	}
+    	},
+		{
+			"doctype":"Custom Field",
+			"dt":"Process Statement Of Accounts",
+			"name":"fetch_customer_for_whatsapp_send",
+			"module":"vortex",
+			"fieldtype":"Button",
+			"insert_after":"show_net_values_in_party_account",
+			"label":"Fetch Customer For Whatsapp Send",
+			"fieldname":"fetch_customer_for_whatsapp_send"
+		}
 ]

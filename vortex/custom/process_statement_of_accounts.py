@@ -758,17 +758,208 @@ def whatsapp(document_name):
         return False
 
 
+	# Working Fine 
+# @frappe.whitelist()
+# def fetch_customers():
+#     # Fetch customers with a primary mobile number
+#     customers = frappe.get_list(
+#         "Customer",
+#         fields=["name", "customer_name", "mobile_no"],
+#         filters=[["mobile_no", "!=", ""]]  # Ensure mobile_no is not empty
+#     )
+
+#     customer_list = [
+#         {
+#             "name": customer.name,
+#             "customer_name": customer.customer_name,
+#             "primary_mobile": customer.mobile_no,
+#         }
+#         for customer in customers
+#     ]
+
+#     if not customer_list:
+#         frappe.throw(_("No Customers with a Primary Mobile Number found."))
+
+#     return customer_list
+
+####-------# Working Fine 
 	
+
+# @frappe.whitelist()
+# def get_customers_based_on_sales_person(sales_person):
+# 	lft, rgt = frappe.db.get_value("Sales Person", sales_person, ["lft", "rgt"])
+# 	records = frappe.db.sql(
+# 		"""
+# 		select distinct parent, parenttype
+# 		from `tabSales Team` steam
+# 		where parenttype = 'Customer'
+# 			and exists(select name from `tabSales Person` where lft >= %s and rgt <= %s and name = steam.sales_person)
+# 	""",
+# 		(lft, rgt),
+# 		as_dict=1,
+# 	)
+# 	sales_person_records = frappe._dict()
+# 	for d in records:
+# 		sales_person_records.setdefault(d.parenttype, set()).add(d.parent)
+# 	if sales_person_records.get("Customer"):
+# 		return frappe.get_list(
+# 			"Customer",
+# 			fields=["name", "customer_name", "email_id"],
+# 			filters=[["name", "in", list(sales_person_records["Customer"])]],
+# 		)
+# 	else:
+# 		return []
+	
+# @frappe.whitelist()
+# def fetch_customers(customer_collection, collection_name, primary_mandatory):
+# 	customer_list = []
+# 	customers = []
+
+# 	if customer_collection == "Sales Person":
+# 		customers = get_customers_based_on_sales_person(collection_name)
+# 		if not bool(customers):
+# 			frappe.throw(_("No Customers found with selected options."))
+# 	else:
+# 		if customer_collection == "Sales Partner":
+# 			customers = frappe.get_list(
+# 				"Customer",
+# 				fields=["name", "customer_name", "email_id"],
+# 				filters=[["default_sales_partner", "=", collection_name]],
+# 			)
+# 		else:
+# 			customers = get_customers_based_on_territory_or_customer_group(
+# 				customer_collection, collection_name
+# 			)
+
+# 	for customer in customers:
+# 		primary_email = customer.get("email_id") or ""
+# 		billing_email = get_customer_emails(customer.name, 1, billing_and_primary=False)
+
+# 		if int(primary_mandatory):
+# 			if primary_email == "":
+# 				continue
+
+# 		customer_list.append(
+# 			{
+# 				"name": customer.name,
+# 				"customer_name": customer.customer_name,
+# 				"primary_email": primary_email,
+# 				"billing_email": billing_email,
+# 			}
+# 		)
+# 	return customer_list
+
+
+# @frappe.whitelist()
+# def get_customer_emails(customer_name, primary_mandatory, billing_and_primary=True):
+# 	"""Returns first email from Contact Email table as a Billing email
+# 	when Is Billing Contact checked
+# 	and Primary email- email with Is Primary checked"""
+
+# 	billing_email = frappe.db.sql(
+# 		"""
+# 		SELECT
+# 			email.email_id
+# 		FROM
+# 			`tabContact Email` AS email
+# 		JOIN
+# 			`tabDynamic Link` AS link
+# 		ON
+# 			email.parent=link.parent
+# 		JOIN
+# 			`tabContact` AS contact
+# 		ON
+# 			contact.name=link.parent
+# 		WHERE
+# 			link.link_doctype='Customer'
+# 			and link.link_name=%s
+# 			and contact.is_billing_contact=1
+# 			{mcond}
+# 		ORDER BY
+# 			contact.creation desc
+# 		""".format(mcond=get_match_cond("Contact")),
+# 		customer_name,
+# 	)
+
+# 	if len(billing_email) == 0 or (billing_email[0][0] is None):
+# 		if billing_and_primary:
+# 			frappe.throw(_("No billing email found for customer: {0}").format(customer_name))
+# 		else:
+# 			return ""
+
+# 	if billing_and_primary:
+# 		primary_email = frappe.get_value("Customer", customer_name, "email_id")
+# 		if primary_email is None and int(primary_mandatory):
+# 			frappe.throw(_("No primary email found for customer: {0}").format(customer_name))
+# 		return [primary_email or "", billing_email[0][0]]
+# 	else:
+# 		return billing_email[0][0] or ""
+
+# @frappe.whitelist()
+# def fetch_customers():
+#     """
+#     Fetch customers who have a primary mobile number.
+
+#     Returns:
+#         list: List of customers with primary mobile numbers.
+#     """
+#     customers = frappe.get_list(
+#         "Customer",
+#         fields=["name", "customer_name", "mobile_no"],
+#         filters=[["mobile_no", "!=", ""]]  # Ensure mobile_no is not empty
+#     )
+
+#     if not customers:
+#         frappe.throw(_("No Customers with a Primary Mobile Number found."))
+
+#     return [
+#         {
+#             "name": customer.name,
+#             "customer_name": customer.customer_name,
+#             "primary_mobile": customer.mobile_no,
+#         }
+#         for customer in customers
+#     ]
+
+
 @frappe.whitelist()
-def fetch_customers():
-    # Fetch customers with a primary mobile number
+def fetch_customers_based_on_sales_person(sales_person):
+    """
+    Fetch customers linked to a specific Sales Person and have a primary mobile number.
+
+    Args:
+        sales_person (str): Name of the Sales Person.
+
+    Returns:
+        list: List of customers with primary mobile numbers.
+    """
+    lft, rgt = frappe.db.get_value("Sales Person", sales_person, ["lft", "rgt"])
+    records = frappe.db.sql(
+        """
+        SELECT DISTINCT parent
+        FROM `tabSales Team` steam
+        WHERE parenttype = 'Customer'
+          AND EXISTS (
+              SELECT name FROM `tabSales Person`
+              WHERE lft >= %s AND rgt <= %s AND name = steam.sales_person
+          )
+        """,
+        (lft, rgt),
+        as_dict=1,
+    )
+
+    customer_names = [record.parent for record in records]
+
+    if not customer_names:
+        frappe.throw(_("No Customers found for Sales Person: {0}").format(sales_person))
+
     customers = frappe.get_list(
         "Customer",
         fields=["name", "customer_name", "mobile_no"],
-        filters=[["mobile_no", "!=", ""]]  # Ensure mobile_no is not empty
+        filters=[["name", "in", customer_names], ["mobile_no", "!=", ""]],
     )
 
-    customer_list = [
+    return [
         {
             "name": customer.name,
             "customer_name": customer.customer_name,
@@ -777,8 +968,43 @@ def fetch_customers():
         for customer in customers
     ]
 
-    if not customer_list:
-        frappe.throw(_("No Customers with a Primary Mobile Number found."))
 
-    return customer_list
+@frappe.whitelist()
+def fetch_customers(customer_collection, collection_name):
+    """
+    Fetch customers based on customer collection (e.g., Sales Person, Sales Partner).
 
+    Args:
+        customer_collection (str): Type of collection (e.g., 'Sales Person').
+        collection_name (str): Name of the collection to filter customers.
+
+    Returns:
+        list: List of customers with primary mobile numbers.
+    """
+    customers = []
+
+    if customer_collection == "Sales Person":
+        customers = fetch_customers_based_on_sales_person(collection_name)
+    elif customer_collection == "Sales Partner":
+        customers = frappe.get_list(
+            "Customer",
+            fields=["name", "customer_name", "mobile_no"],
+            filters=[
+                ["default_sales_partner", "=", collection_name],
+                ["mobile_no", "!=", ""],
+            ],
+        )
+    else:
+        frappe.throw(_("Unsupported customer collection: {0}").format(customer_collection))
+
+    if not customers:
+        frappe.throw(_("No Customers found for {0}: {1}").format(customer_collection, collection_name))
+
+    return [
+        {
+            "name": customer.name,
+            "customer_name": customer.customer_name,
+            "primary_mobile": customer.mobile_no,
+        }
+        for customer in customers
+    ]
