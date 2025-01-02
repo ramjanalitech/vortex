@@ -27,38 +27,22 @@ frappe.ui.form.on('Process Statement Of Accounts', {
             });
         }
     },
-	// fetch_customer_for_whatsapp_send: function (frm) {
-	// 	frappe.call({
-	// 		method: "vortex.custom.process_statement_of_accounts.fetch_customers",
-	// 		callback: function (r) {
-	// 			if (!r.exc) {
-	// 				if (r.message.length) {
-	// 					frm.clear_table("customers");
-	// 					for (const customer of r.message) {
-	// 						var row = frm.add_child("customers");
-	// 						row.customer = customer.name;
-	// 						row.customer_name = customer.customer_name;
-	// 						row.mobile_no = customer.primary_mobile; // Add primary mobile number
-	// 					}
-	// 					frm.refresh_field("customers");
-	// 				} else {
-	// 					frappe.msgprint({
-	// 						title: __("No Customers Found"),
-	// 						indicator: "red",
-	// 						message: __("No Customers with a Primary Mobile Number found."),
-	// 					});
-	// 				}
-	// 			}
-	// 		},
-	// 	});
-	// },	
+    // Mobile number 
+    customer_collection: function (frm) {
+        frm.set_value("collection_name", "");
+        if (frm.doc.customer_collection) {
+            frm.get_field("collection_name").set_label(frm.doc.customer_collection);
+        }
+    },
+    
     fetch_customer_for_whatsapp_send: function (frm) {
         if (frm.doc.collection_name) {
             frappe.call({
-                method: "erpnext.accounts.doctype.process_statement_of_accounts.process_statement_of_accounts.fetch_customers",
+                method: "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp",
                 args: {
                     customer_collection: frm.doc.customer_collection,
                     collection_name: frm.doc.collection_name,
+                    primary_mandatory: frm.doc.primary_mandatory,
                 },
                 callback: function (r) {
                     if (!r.exc) {
@@ -67,8 +51,7 @@ frappe.ui.form.on('Process Statement Of Accounts', {
                             for (const customer of r.message) {
                                 var row = frm.add_child("customers");
                                 row.customer = customer.name;
-                                row.customer_name = customer.customer_name;
-                                row.primary_mobile = customer.primary_mobile; // Using primary_mobile instead of email
+                                row.mobile_no = customer.primary_mobile;  // Replaced email with mobile
                             }
                             frm.refresh_field("customers");
                         } else {
@@ -80,5 +63,5 @@ frappe.ui.form.on('Process Statement Of Accounts', {
         } else {
             frappe.throw("Enter " + frm.doc.customer_collection + " name.");
         }
-    },    
+    },  
 });

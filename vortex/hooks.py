@@ -192,7 +192,7 @@ override_whitelisted_methods = {
     "vortex.custom.sales_order.search_serial_number": "vortex.custom.sales_order.search_serial_number",
     "vortex.custom.general_ledger.whatsapp_get_doc": "vortex.custom.general_ledger.whatsapp_get_doc",
     "vortex.custom.process_statement_of_accounts.whatsapp": "vortex.custom.process_statement_of_accounts.whatsapp",
-    "vortex.custom.process_statement_of_accounts.fetch_customers": "vortex.custom.process_statement_of_accounts.fetch_customers"
+    "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp": "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp"
 }
 #
 # each overriding function accepts a `data` argument;
