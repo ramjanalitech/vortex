@@ -32,6 +32,9 @@ doc_events = {
     },
      "Sales Order": {
     "on_submit": "vortex.custom.sales_order.sales_order"
+    },
+    "Sales Invoice": {
+        "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
     }
     }
 
@@ -170,13 +173,13 @@ override_doctype_class = {
 #	],
 # }
 
-scheduler_events = {
-    "cron": {
-        "0 21 * * *": [
-            "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
-        ]
-    }
-}
+# scheduler_events = {
+#     "cron": {
+#         "0 21 * * *": [
+#             "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
+#         ]
+#     }
+# }
 
 
 # Testing
@@ -190,9 +193,9 @@ scheduler_events = {
 override_whitelisted_methods = {
 	"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry": "vortex.overrides.payment_entry.get_payment_entry",
     "vortex.custom.sales_order.search_serial_number": "vortex.custom.sales_order.search_serial_number",
-    "vortex.custom.general_ledger.whatsapp_get_doc": "vortex.custom.general_ledger.whatsapp_get_doc",
     "vortex.custom.process_statement_of_accounts.whatsapp": "vortex.custom.process_statement_of_accounts.whatsapp",
-    "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp": "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp"
+    "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp": "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp",
+    "vortex.custom.sales_invoice.send_whatsapp_button": "vortex.custom.sales_invoice.send_whatsapp_button"
 }
 #
 # each overriding function accepts a `data` argument;
