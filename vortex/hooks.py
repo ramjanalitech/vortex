@@ -32,10 +32,10 @@ doc_events = {
     },
      "Sales Order": {
     "on_submit": "vortex.custom.sales_order.sales_order"
-    },
-    "Sales Invoice": {
-        "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
     }
+    # "Sales Invoice": {
+    #     "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
+    # }
     }
 
 # include js, css files in header of web template

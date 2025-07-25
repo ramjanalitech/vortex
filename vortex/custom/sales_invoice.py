@@ -13,9 +13,18 @@ def generate_pdf_and_send_whatsapp_on_submit(doc, method=None):
     else:
         frappe.msgprint(_("Failed to send WhatsApp message. Reason: {0}").format(result.get("message")))
 
+# @frappe.whitelist()
+# def send_whatsapp_button(docname, doctype):
+#     return send_whatsapp_message(docname, doctype)
+
 @frappe.whitelist()
 def send_whatsapp_button(docname, doctype):
-    return send_whatsapp_message(docname, doctype)
+    result = send_whatsapp_message(docname, doctype)
+    if result.get("status") == "Sent":
+        frappe.msgprint(_("WhatsApp message sent successfully to {0}").format(result.get("mobile")))
+    else:
+        frappe.msgprint(_("Failed to send WhatsApp message. Reason: {0}").format(result.get("message")))
+    return result
 
 def send_whatsapp_message(docname, doctype):
     doc = frappe.get_doc(doctype, docname)
