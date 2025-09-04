@@ -79,7 +79,6 @@ def get_campaign_name(doctype):
         whatsapp_campaign = frappe.get_doc("Whatsapp Setting")
         for campaign in whatsapp_campaign.whatsapp_campaign:
             if campaign.campaign_doctype == doctype:
-                frappe.msgprint(f"campaign: {campaign.campaign_name}")
                 return campaign.campaign_name
     except frappe.DoesNotExistError:
         frappe.throw(_("No WhatsApp campaign settings found."))
