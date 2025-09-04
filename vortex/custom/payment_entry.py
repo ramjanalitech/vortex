@@ -1,103 +1,185 @@
-import frappe 
-import requests
+import frappe
 import json
-from frappe.utils import get_url
-from frappe.utils import get_url_to_form, now_datetime, get_fullname, get_bench_path, get_site_path, get_request_site_address
+import requests
 from frappe.utils.pdf import get_pdf
-from frappe.utils.file_manager import save_file
-import base64
-import os
+from frappe.utils import get_url
+from frappe import _
+
+# ---------------- PAYMENT ENTRY ---------------- #
 
 @frappe.whitelist()
-def payment_receipt(doc,method=None):
-	document=frappe.get_doc("Whatsapp Setting")
-	payment_entry_name = doc.name
-	url=document.url
-	api_key = document.api_key
-	whatsapp_camapaign = frappe.get_doc('Whatsapp Setting')
-	for camp_name in whatsapp_camapaign.whatsapp_campaign:
-		if camp_name.campaign_doctype == "Payment Entry":
-			payment_campaign = camp_name.campaign_name
-	campaign_name = payment_campaign
-	phone_no = frappe.get_doc("Contact",doc.contact_person)
-	destination = phone_no.mobile_no
-	pdf_link = get_payment_entry_pdf_link(payment_entry_name)
-	template_params = str(doc.paid_amount)
-	fileurl = pdfurl_generate(pdf_link,"Payment Entry",payment_entry_name)
-	headers = {"Content-Type": "application/json"}
-	data = {
-				"apiKey": api_key,
-				"campaignName": campaign_name,
-				"destination": destination,
-				"userName": doc.company,
-				"source": "Payment Entry",
-				"media": {
-				"url": fileurl,
-				"filename": doc.company
-				},
-				"templateParams": [
-					template_params
-				],
-				"tags": [
-				"string"
-				]
-				}
-	req = requests.post(url, data=json.dumps(data), headers=headers)	
-	if req.status_code == 200:
-		new_doc = frappe.new_doc("Whatsapp Log")
-		new_doc.doctype_name = "Payment Entry"
-		new_doc.url = str(fileurl)
-		new_doc.response = req
-		new_doc.document_name = payment_entry_name
-		new_doc.status = "Sent"
-		new_doc.save()
-		frappe.msgprint("Whatsapp SMS Sent ")
-	else:
-		new_doc = frappe.new_doc("Whatsapp Log")
-		new_doc.doctype_name = "Payment Entry"
-		new_doc.url = str(fileurl)
-		new_doc.response = req
-		new_doc.document_name = payment_entry_name
-		new_doc.status = "Not Sent"
-		new_doc.save()
-		frappe.msgprint("Whatsapp SMS Not Sent ")
+def generate_pdf_and_send_whatsapp_on_submit_payment(doc, method=None):
+    result = send_whatsapp_message_payment(doc.name, "Payment Entry")
+    if result.get("status") == "Sent":
+        frappe.msgprint(_("WhatsApp message sent successfully to {0}").format(result.get("mobile")))
+    else:
+        frappe.msgprint(_("Failed to send WhatsApp message. Reason: {0}").format(result.get("message")))
 
-def get_payment_entry_pdf_link(doc):
-	docname = frappe.get_doc("Payment Entry",doc)	
-	key = docname.get_document_share_key( expires_on=None,no_expiry=True)
-	print_format = "Standard"
-	doctype = frappe.get_doc("DocType", docname)
-	if doctype.custom:
-		if doctype.default_print_format:
-			print_format = doctype.default_print_format
-	else:
-		default_print_format = frappe.db.get_value("Property Setter",filters={"doc_type": "Payment Entry","property": "default_print_format"},fieldname="value")
-		print_format = default_print_format if default_print_format else print_format
 
-	link = get_pdf_link("Payment Entry",docname.name,print_format=print_format)
-	filename = f'{docname}.pdf'
-	url = f'{frappe.utils.get_url()}{link}&key={key}'
-	return url
+# ---------------- COMMON BUTTON ---------------- #
 
-def pdfurl_generate(pdf_link,doctype,docname): 
-	base_path = frappe.db.get_single_value('Whatsapp Setting','base_path')
-	bench_path = get_bench_path()
-	site_path = get_site_path().replace(".", "/sites",1)
-	base_path_ = bench_path + site_path	
-	file_name = frappe.generate_hash("",5) + ".pdf"
-	cert_file_name = "cert_" + file_name	
-	headers = {'Content-Type': 'application/json'}
-	cert_url = pdf_link
-	certificate_response = requests.get(cert_url,headers=headers)	
-	cert_file_path = "/public/files/" + cert_file_name
-	cert_file = open(base_path_ + cert_file_path, "wb")
-	cert_file.write(certificate_response.content)
-	cert_file.close()
-	pdf_file = save_file(fname=cert_file_name, content=base64.b64encode(certificate_response.content),dt=doctype, dn=docname, decode=True, is_private=0)
-	file_url = base_path + pdf_file.file_url 	
-	return file_url
+@frappe.whitelist()
+def send_whatsapp_button(docname, doctype):
+    if doctype == "Payment Entry":
+        result = send_whatsapp_message_payment(docname, doctype)
+    else:
+        result = send_whatsapp_message(docname, doctype)
 
-def get_pdf_link(doctype, docname, print_format="Standard", no_letterhead=0):
-	return "/api/method/frappe.utils.print_format.download_pdf?doctype={doctype}&name={docname}&format={print_format}&no_letterhead={no_letterhead}".format(
-		doctype=doctype, docname=docname, print_format=print_format, no_letterhead=no_letterhead)
- 
+    if result.get("status") == "Sent":
+        frappe.msgprint(_("WhatsApp message sent successfully to {0}").format(result.get("mobile")))
+    else:
+        frappe.msgprint(_("Failed to send WhatsApp message. Reason: {0}").format(result.get("message")))
+    return result
+
+
+# ---------------- PAYMENT ENTRY MESSAGE ---------------- #
+
+def send_whatsapp_message_payment(docname, doctype):
+    doc = frappe.get_doc(doctype, docname)
+
+    mobile = getattr(doc, "contact_mobile", None)
+
+    # If mobile not on Payment Entry, fetch from linked Customer/Supplier
+    if not mobile and doc.party_type and doc.party:
+        if doc.party_type == "Customer":
+            mobile = frappe.db.get_value("Customer", doc.party, "mobile_no")
+        elif doc.party_type == "Supplier":
+            mobile = frappe.db.get_value("Supplier", doc.party, "mobile_no")
+
+    if not mobile:
+        frappe.throw(_("Contact number is missing. Please update the Party's mobile number."))
+
+    party_name = getattr(doc, "party_name", None) or getattr(doc, "party", None)
+
+    payment_data = {
+        "name": docname,
+        "doctype": doctype,
+        "customer": party_name,   # reusing "customer" key to keep send_whatsapp_with_pdf compatible
+        "contact_mobile": mobile
+    }
+
+    whatsapp_settings = get_whatsapp_settings()
+
+    return send_whatsapp_with_pdf(payment_data, whatsapp_settings["api_key"], whatsapp_settings["url"])
+
+
+# ---------------- SETTINGS ---------------- #
+
+def get_whatsapp_settings():
+    try:
+        whatsapp_settings = frappe.get_doc("Whatsapp Setting")
+        if not whatsapp_settings.url or not whatsapp_settings.api_key:
+            frappe.throw(_("WhatsApp settings are incomplete. Please configure URL and API Key."))
+        return {"url": whatsapp_settings.url, "api_key": whatsapp_settings.api_key}
+    except frappe.DoesNotExistError:
+        frappe.throw(_("WhatsApp settings not found. Please configure 'Whatsapp Setting'."))
+
+def get_campaign_name(doctype):
+    try:
+        whatsapp_campaign = frappe.get_doc("Whatsapp Setting")
+        for campaign in whatsapp_campaign.whatsapp_campaign:
+            if campaign.campaign_doctype == doctype:
+                frappe.msgprint(f"campaign: {campaign.campaign_name}")
+                return campaign.campaign_name
+    except frappe.DoesNotExistError:
+        frappe.throw(_("No WhatsApp campaign settings found."))
+
+    frappe.throw(_("No WhatsApp campaign found for {0}").format(doctype))
+
+
+# ---------------- SEND MESSAGE ---------------- #
+
+def send_whatsapp_with_pdf(invoice, api_key, url):
+    try:
+        # Generate public URL to PDF
+        file_url = generate_public_pdf(invoice["name"], invoice["doctype"])
+        
+        headers = {"Content-Type": "application/json"}
+        data = {
+            "apiKey": api_key,
+            "campaignName": get_campaign_name(invoice["doctype"]),
+            "destination": invoice["contact_mobile"],
+            "userName": invoice["customer"],
+            "source": invoice["doctype"],
+            "media": {
+                "url": file_url,
+                "filename": f"{invoice['name']}.pdf"
+            },
+            # 👇 Always pass paid amount as template param
+            "templateParams": [str(frappe.db.get_value(invoice["doctype"], invoice["name"], "paid_amount"))],
+            "tags": [invoice["doctype"]]
+        }
+
+        frappe.logger().debug(f"Sending WhatsApp: {json.dumps(data)}")
+
+        response = requests.post(url, data=json.dumps(data), headers=headers, timeout=10)
+        status = "Sent" if response.status_code == 200 else "Not Sent"
+
+        log_whatsapp_status(
+            invoice["name"],
+            invoice["doctype"],
+            invoice["customer"],
+            invoice["contact_mobile"],
+            file_url,
+            response.text,
+            status
+        )
+
+        return {
+            "status": status,
+            "message": response.text,
+            "mobile": invoice["contact_mobile"]
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), f"Error sending WhatsApp message for {invoice['name']}")
+        return {
+            "status": "Failed",
+            "message": str(e),
+            "mobile": invoice["contact_mobile"]
+        }
+
+
+# ---------------- PDF GENERATION ---------------- #
+
+def generate_public_pdf(docname, doctype):
+    print_format = frappe.db.get_value(
+        "Property Setter",
+        {"doc_type": doctype, "property": "default_print_format"},
+        "value"
+    ) or "Standard"
+
+    html = frappe.get_print(doctype, docname, print_format=print_format)
+    pdf_content = get_pdf(html)
+
+    file_name = f"{frappe.generate_hash('', 5)}.pdf"
+    file_doc = frappe.get_doc({
+        "doctype": "File",
+        "file_name": file_name,
+        "attached_to_doctype": doctype,
+        "attached_to_name": docname,
+        "is_private": 0,
+        "content": pdf_content
+    })
+    file_doc.save(ignore_permissions=True)
+    frappe.db.commit()
+
+    return get_url() + file_doc.file_url
+
+
+# ---------------- LOGGING ---------------- #
+
+def log_whatsapp_status(docname, doctype, customer, mobile_no, file_url, response_text, status):
+    try:
+        frappe.get_doc({
+            "doctype": "Whatsapp Log",
+            "doctype_name": doctype,
+            "document_name": docname,
+            "customer": customer,
+            "mobile_no": mobile_no,
+            "url": file_url,
+            "status": status,
+            "response": response_text
+        }).insert(ignore_permissions=True)
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), f"Failed to log WhatsApp for {docname}")
