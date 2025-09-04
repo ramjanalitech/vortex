@@ -21,9 +21,9 @@ doctype_js = {
 }
 
 doc_events = {
-    "Payment Entry": {
-    "on_submit": "vortex.custom.payment_entry.payment_receipt"
-    },
+    # "Payment Entry": {
+    # "on_submit": "vortex.custom.payment_entry.payment_receipt"
+    # },
     "Payment Request": {
     "on_submit": "vortex.custom.payment_request.payment_request"
     },
