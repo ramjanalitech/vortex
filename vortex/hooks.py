@@ -28,7 +28,7 @@ doc_events = {
     "on_submit": "vortex.custom.payment_request.payment_request"
     },
      "Delivery Note": {
-    "on_submit": "vortex.custom.delivery_note.delivery_note"
+    "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
     },
      "Sales Order": {
     "on_submit": "vortex.custom.sales_order.sales_order"
@@ -156,30 +156,18 @@ override_doctype_class = {
 # ---------------
 
 # scheduler_events = {
-#	"all": [
-#		"vortex.tasks.all"
-#	],
-#	"daily": [
-#		"vortex.tasks.daily"
-#	],
-#	"hourly": [
-#		"vortex.tasks.hourly"
-#	],
-#	"weekly": [
-#		"vortex.tasks.weekly"
-#	],
-#	"monthly": [
-#		"vortex.tasks.monthly"
-#	],
+# 	"daily": [
+# 		"vortex.custom.whatsapp_reports.send_ar_summary_whatsapp_simple"
+# 	]
 # }
 
-# scheduler_events = {
-#     "cron": {
-#         "0 21 * * *": [
-#             "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
-#         ]
-#     }
-# }
+scheduler_events = {
+    "cron": {
+        "0 21 * * *": [
+            "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
+        ]
+    }
+}
 
 
 # Testing

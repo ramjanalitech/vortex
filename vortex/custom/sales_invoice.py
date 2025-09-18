@@ -5,9 +5,17 @@ from frappe.utils.pdf import get_pdf
 from frappe.utils import get_url, formatdate
 from frappe import _
 
+# @frappe.whitelist()
+# def generate_pdf_and_send_whatsapp_on_submit(doc, method=None):
+#     result = send_whatsapp_message(doc.name, "Sales Invoice")
+#     if result.get("status") == "Sent":
+#         frappe.msgprint(_("WhatsApp message sent successfully to {0}").format(result.get("mobile")))
+#     else:
+#         frappe.msgprint(_("Failed to send WhatsApp message. Reason: {0}").format(result.get("message")))
+
 @frappe.whitelist()
 def generate_pdf_and_send_whatsapp_on_submit(doc, method=None):
-    result = send_whatsapp_message(doc.name, "Sales Invoice")
+    result = send_whatsapp_message(doc.name, doc.doctype)  # 👈 change here
     if result.get("status") == "Sent":
         frappe.msgprint(_("WhatsApp message sent successfully to {0}").format(result.get("mobile")))
     else:
@@ -65,12 +73,72 @@ def get_campaign_name(doctype):
 
     frappe.throw(_("No WhatsApp campaign found for {0}").format(doctype))
 
+# def send_whatsapp_with_pdf(invoice, api_key, url):
+#     try:
+#         # Generate public URL to PDF
+#         file_url = generate_public_pdf(invoice["name"], invoice["doctype"])
+        
+#         headers = {"Content-Type": "application/json"}
+#         data = {
+#             "apiKey": api_key,
+#             "campaignName": get_campaign_name(invoice["doctype"]),
+#             "destination": invoice["contact_mobile"],
+#             "userName": invoice["customer"],
+#             "source": invoice["doctype"],
+#             "media": {
+#                 "url": file_url,
+#                 "filename": f"{invoice['name']}.pdf"
+#             },
+#             "templateParams": [],
+#             "tags": [invoice["doctype"]]
+#         }
+
+#         frappe.logger().debug(f"Sending WhatsApp: {json.dumps(data)}")
+
+#         response = requests.post(url, data=json.dumps(data), headers=headers, timeout=10)
+#         status = "Sent" if response.status_code == 200 else "Not Sent"
+
+#         log_whatsapp_status(
+#             invoice["name"],
+#             invoice["doctype"],
+#             invoice["customer"],
+#             invoice["contact_mobile"],
+#             file_url,
+#             response.text,
+#             status
+#         )
+
+#         return {
+#             "status": status,
+#             "message": response.text,
+#             "mobile": invoice["contact_mobile"]
+#         }
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), f"Error sending WhatsApp message for {invoice['name']}")
+#         return {
+#             "status": "Failed",
+#             "message": str(e),
+#             "mobile": invoice["contact_mobile"]
+#         }
+
 def send_whatsapp_with_pdf(invoice, api_key, url):
     try:
-        # Generate public URL to PDF
         file_url = generate_public_pdf(invoice["name"], invoice["doctype"])
-        
         headers = {"Content-Type": "application/json"}
+
+        # Handle template params differently for each doctype
+        if invoice["doctype"] == "Delivery Note":
+            template_params = [getattr(frappe.get_doc("Delivery Note", invoice["name"]), "sales_invoice", "")]
+        else:
+            # Default for Sales Invoice (example: customer, doctype, name)
+            # template_params = [
+            #     invoice["customer"],
+            #     invoice["doctype"],
+            #     invoice["name"]
+            # ]
+            template_params = []
+
         data = {
             "apiKey": api_key,
             "campaignName": get_campaign_name(invoice["doctype"]),
@@ -81,7 +149,7 @@ def send_whatsapp_with_pdf(invoice, api_key, url):
                 "url": file_url,
                 "filename": f"{invoice['name']}.pdf"
             },
-            "templateParams": [],
+            "templateParams": template_params,   # 👈 dynamic
             "tags": [invoice["doctype"]]
         }
 
