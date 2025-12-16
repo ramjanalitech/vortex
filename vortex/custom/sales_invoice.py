@@ -227,12 +227,15 @@ def send_whatsapp_button(docname, doctype):
 
 def schedule_sales_invoices_whatsapp():
     """
-    Daily cron job to send WhatsApp for submitted invoices
+    Send WhatsApp only for today's submitted Sales Invoices
     """
+    today = frappe.utils.today()
+
     invoices = frappe.get_all(
         "Sales Invoice",
         filters={
             "docstatus": 1,
+            "posting_date": today,          # 👈 ONLY TODAY
             "contact_mobile": ["!=", ""]
         },
         fields=["name"]
