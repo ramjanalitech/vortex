@@ -169,6 +169,13 @@ scheduler_events = {
     }
 }
 
+scheduler_events = {
+    "cron": {
+        "0 21 * * *": [
+            "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
+        ]
+    }
+}
 
 # Testing
 # -------
@@ -183,7 +190,8 @@ override_whitelisted_methods = {
     "vortex.custom.sales_order.search_serial_number": "vortex.custom.sales_order.search_serial_number",
     "vortex.custom.process_statement_of_accounts.whatsapp": "vortex.custom.process_statement_of_accounts.whatsapp",
     "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp": "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp",
-    "vortex.custom.sales_invoice.send_whatsapp_button": "vortex.custom.sales_invoice.send_whatsapp_button"
+    "vortex.custom.sales_invoice.send_whatsapp_button": "vortex.custom.sales_invoice.send_whatsapp_button",
+    "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp":"vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
 }
 #
 # each overriding function accepts a `data` argument;
