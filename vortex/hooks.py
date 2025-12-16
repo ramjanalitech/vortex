@@ -164,7 +164,7 @@ override_doctype_class = {
 scheduler_events = {
     "cron": {
         "0 21 * * *": [
-            "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
+            "vortex.custom.sales_invoice.send_whatsapp_button"
         ]
     }
 }
