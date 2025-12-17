@@ -179,7 +179,7 @@ from frappe import _
 @frappe.whitelist()
 def generate_pdf_and_send_whatsapp_on_submit(doc, method=None):
     """
-    Triggered on Sales Invoice / Delivery Note submit
+    Triggered on Sales Invoice submit
     """
     result = send_whatsapp_message(doc.name, doc.doctype)
 
@@ -195,7 +195,6 @@ def generate_pdf_and_send_whatsapp_on_submit(doc, method=None):
             _("Failed to send WhatsApp message. Reason: {0}")
             .format(result.get("message"))
         )
-
 
 # --------------------------------------------------
 # 2️⃣ BUTTON ACTION

@@ -33,10 +33,14 @@ doc_events = {
      "Sales Order": {
     "on_submit": "vortex.custom.sales_order.sales_order"
     }
-    # "Sales Invoice": {
-    #     "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
-    # }
+}
+
+doc_events = {
+    "Sales Invoice": {
+        "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
     }
+}
+
 
 # include js, css files in header of web template
 # web_include_css = "/assets/vortex/css/vortex.css"
@@ -161,21 +165,21 @@ override_doctype_class = {
 # 	]
 # }
 
-scheduler_events = {
-    "cron": {
-        "0 21 * * *": [
-            "vortex.custom.sales_invoice.send_whatsapp_button"
-        ]
-    }
-}
+# scheduler_events = {
+#     "cron": {
+#         "0 21 * * *": [
+#             "vortex.custom.sales_invoice.send_whatsapp_button"
+#         ]
+#     }
+# }
 
-scheduler_events = {
-    "cron": {
-        "0 21 * * *": [
-            "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
-        ]
-    }
-}
+# scheduler_events = {
+#     "cron": {
+#         "0 21 * * *": [
+#             "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
+#         ]
+#     }
+# }
 
 # Testing
 # -------
@@ -191,7 +195,8 @@ override_whitelisted_methods = {
     "vortex.custom.process_statement_of_accounts.whatsapp": "vortex.custom.process_statement_of_accounts.whatsapp",
     "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp": "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp",
     "vortex.custom.sales_invoice.send_whatsapp_button": "vortex.custom.sales_invoice.send_whatsapp_button",
-    "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp":"vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp"
+    "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp":"vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp",
+    "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit":"vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
 }
 #
 # each overriding function accepts a `data` argument;
