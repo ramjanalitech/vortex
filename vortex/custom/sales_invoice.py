@@ -254,14 +254,68 @@ def schedule_sales_invoices_whatsapp():
 # 4️⃣ CORE SENDER
 # --------------------------------------------------
 
+# def send_whatsapp_message(docname, doctype):
+#     doc = frappe.get_doc(doctype, docname)
+
+#     # Skip if mobile missing (scheduler-safe)
+#     if not getattr(doc, "contact_mobile", None):
+#         return {
+#             "status": "Skipped",
+#             "message": "Mobile number missing",
+#             "mobile": None
+#         }
+
+#     # Prevent duplicate WhatsApp
+#     if frappe.db.exists(
+#         "Whatsapp Log",
+#         {
+#             "doctype_name": doctype,
+#             "document_name": docname,
+#             "status": "Sent"
+#         }
+#     ):
+#         return {
+#             "status": "Skipped",
+#             "message": "WhatsApp already sent",
+#             "mobile": doc.contact_mobile
+#         }
+
+#     customer_name = getattr(doc, "customer_name", None) or getattr(doc, "customer", None)
+
+#     invoice_data = {
+#         "name": docname,
+#         "doctype": doctype,
+#         "customer": customer_name,
+#         "contact_mobile": doc.contact_mobile
+#     }
+
+#     whatsapp_settings = get_whatsapp_settings()
+
+#     return send_whatsapp_with_pdf(
+#         invoice_data,
+#         whatsapp_settings["api_key"],
+#         whatsapp_settings["url"]
+#     )
+
 def send_whatsapp_message(docname, doctype):
     doc = frappe.get_doc(doctype, docname)
 
-    # Skip if mobile missing (scheduler-safe)
+    # 🚫 Skip Return or Replacement Sales Invoices
+    if doctype == "Sales Invoice" and (
+        getattr(doc, "is_return", 0) or
+        getattr(doc, "is_replacement", 0)
+    ):
+        return {
+            "status": "Skipped",
+            "message": "Return / Replacement Sales Invoice – WhatsApp not applicable",
+            "mobile": None
+        }
+
+    # Skip if mobile missing
     if not getattr(doc, "contact_mobile", None):
         return {
             "status": "Skipped",
-            "message": "Mobile number missing",
+            "message": "Customer mobile number is missing",
             "mobile": None
         }
 
@@ -276,7 +330,7 @@ def send_whatsapp_message(docname, doctype):
     ):
         return {
             "status": "Skipped",
-            "message": "WhatsApp already sent",
+            "message": "WhatsApp already sent for this document",
             "mobile": doc.contact_mobile
         }
 
