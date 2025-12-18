@@ -303,7 +303,7 @@ def send_whatsapp_message(docname, doctype):
     # 🚫 Skip Return or Replacement Sales Invoices
     if doctype == "Sales Invoice" and (
         getattr(doc, "is_return", 0) or
-        getattr(doc, "is_replacement", 0)
+        getattr(doc, "is_replacemnet", 0)
     ):
         return {
             "status": "Skipped",
