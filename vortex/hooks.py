@@ -40,6 +40,12 @@ doc_events = {
         "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
     }
 }
+scheduler_events = {
+    "daily": [
+        "vortex.custom.sales_invoice.schedule_overdue_sales_invoice_whatsapp"
+    ]
+}
+
 
 
 # include js, css files in header of web template
@@ -196,7 +202,8 @@ override_whitelisted_methods = {
     "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp": "vortex.custom.process_statement_of_accounts.fetch_customers_whatsapp",
     "vortex.custom.sales_invoice.send_whatsapp_button": "vortex.custom.sales_invoice.send_whatsapp_button",
     "vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp":"vortex.custom.sales_invoice.schedule_sales_invoices_whatsapp",
-    "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit":"vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
+    "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit":"vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit",
+    "vortex.custom.sales_invoice.schedule_overdue_sales_invoice_whatsapp":"vortex.custom.sales_invoice.schedule_overdue_sales_invoice_whatsapp"
 }
 #
 # each overriding function accepts a `data` argument;
