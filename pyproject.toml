@@ -1,0 +1,14 @@
+[project]
+name = "vortex"
+authors = [
+    { name = "RamjanAli", email = "ramjanlal.tech@gmail.com" }
+]
+description = "Whatsapp message"
+requires-python = ">=3.10"
+dynamic = ["version"]
+dependencies = [
+    "frappe",
+]
+
+[tool.bench.frappe-dependencies]
+frappe = ">=15.0.0"
