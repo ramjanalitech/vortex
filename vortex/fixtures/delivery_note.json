@@ -1,14 +1,14 @@
 [
-	{
-		"doctype":"Custom Field",
-		"dt":"Delivery Note",
-		"fieldname":"sales_invoice",
-		"name":"delivery_sales_invoice",
-		"module":"vortex",
-		"fieldtype":"Link",
-		"insert_after":"company",
-		"label":"Sales Invoice",
-        "options": "Sales Invoice"
+		{
+			"doctype":"Custom Field",
+			"dt":"Delivery Note",
+			"fieldname":"sales_invoice",
+			"name":"delivery_sales_invoice",
+			"module":"vortex",
+			"fieldtype":"Link",
+			"insert_after":"company",
+			"label":"Sales Invoice",
+			"options": "Sales Invoice"
     	},
 		{
 			"doctype":"Custom Field",
@@ -19,5 +19,16 @@
 			"insert_after":"show_net_values_in_party_account",
 			"label":"Fetch Customer For Whatsapp Send",
 			"fieldname":"fetch_customer_for_whatsapp_send"
+		},
+		{
+			"doctype":"Custom Field",
+			"dt":"Sales Invoice",
+			"fieldname":"multi_whatsapp",
+			"name":"multi_whatsapp_sales_invoice",
+			"module":"vortex",
+			"fieldtype":"check",
+			"insert_after":"company",
+			"label":"Multi Whatsapp",
+			"options": "Sales Invoice"
 		}
 ]
