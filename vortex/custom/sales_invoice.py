@@ -124,20 +124,21 @@ def send_whatsapp_message(docname, doctype):
             "mobile": None
         }
 
-    # Prevent duplicate WhatsApp
-    if frappe.db.exists(
-        "Whatsapp Log",
-        {
-            "doctype_name": doctype,
-            "document_name": docname,
-            "status": "Sent"
-        }
-    ):
-        return {
-            "status": "Skipped",
-            "message": "WhatsApp already sent for this document",
-            "mobile": doc.contact_mobile
-        }
+    # Prevent duplicate WhatsApp (unless multi_whatsapp is ticked)
+    if not cint(getattr(doc, "multi_whatsapp", 0)):
+        if frappe.db.exists(
+            "Whatsapp Log",
+            {
+                "doctype_name": doctype,
+                "document_name": docname,
+                "status": "Sent"
+            }
+        ):
+            return {
+                "status": "Skipped",
+                "message": "WhatsApp already sent for this document",
+                "mobile": doc.contact_mobile
+            }
 
     customer_name = getattr(doc, "customer_name", None) or getattr(doc, "customer", None)
 

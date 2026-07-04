@@ -26,9 +26,9 @@
 			"fieldname":"multi_whatsapp",
 			"name":"multi_whatsapp_sales_invoice",
 			"module":"vortex",
-			"fieldtype":"check",
-			"insert_after":"company",
+			"fieldtype":"Check",
+			"insert_after":"is_return",
 			"label":"Multi Whatsapp",
-			"options": "Sales Invoice"
+			"allow_on_submit":1
 		}
 ]
