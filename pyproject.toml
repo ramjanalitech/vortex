@@ -7,7 +7,7 @@ authors = [
 description = "Whatsapp message"
 requires-python = ">=3.10"
 dependencies = [
-    "frappe",
+    
 ]
 
 [tool.bench.frappe-dependencies]
