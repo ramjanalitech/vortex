@@ -10,21 +10,20 @@
 		"insert_after": "employee",
 		"label":"Email",
 		"reqd": 1
+	},
+	{
+		"name": "Sales Team-custom_email",
+		"idx": 6,
+		"dt": "Sales Team",
+		"module": "Vortex",
+		"label": "Email",
+		"fieldname": "email",
+		"insert_after": "incentives",
+		"fieldtype": "Data",
+		"options": "Email",
+		"sort_options": 0,
+		"fetch_from": "sales_person.email",
+		"reqd": 1,
+		"doctype": "Custom Field"
 	}
 ]
-
-{
-	"name": "Sales Team-custom_email",
-	"idx": 6,
-	"dt": "Sales Team",
-	"module": "Vortex",
-	"label": "Email",
-	"fieldname": "email",
-	"insert_after": "incentives",
-	"fieldtype": "Data",
-	"options": "Email",
-	"sort_options": 0,
-	"fetch_from": "sales_person.email",
-	"reqd": 1,
-	"doctype": "Custom Field"
-}
