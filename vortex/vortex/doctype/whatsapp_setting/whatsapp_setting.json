@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "creation": "2023-12-18 19:00:36.082551",
  "default_view": "List",
  "doctype": "DocType",
@@ -11,7 +10,13 @@
   "api_key",
   "base_path",
   "whatsapp_campaign",
-  "whatsapp_campaign_report"
+  "whatsapp_campaign_report",
+  "section_break_qkae",
+  "payment_entry",
+  "column_break_aich",
+  "sales_invoice",
+  "column_break_awqf",
+  "delivery_note"
  ],
  "fields": [
   {
@@ -42,12 +47,42 @@
    "fieldtype": "Table",
    "label": "Whatsapp Campaign Report",
    "options": "Whatsapp Campaign Report"
+  },
+  {
+   "fieldname": "section_break_qkae",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "payment_entry",
+   "fieldtype": "Check",
+   "label": "Payment Entry"
+  },
+  {
+   "fieldname": "column_break_aich",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "sales_invoice",
+   "fieldtype": "Check",
+   "label": "Sales Invoice"
+  },
+  {
+   "fieldname": "column_break_awqf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "delivery_note",
+   "fieldtype": "Check",
+   "label": "Delivery Note"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-11 18:02:22.172983",
+ "modified": "2026-11-03 17:44:35.135911",
  "modified_by": "Administrator",
  "module": "Vortex",
  "name": "Whatsapp Setting",
@@ -64,6 +99,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

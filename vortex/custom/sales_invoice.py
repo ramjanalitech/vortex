@@ -20,6 +20,11 @@ def generate_pdf_and_send_whatsapp_on_submit(doc, method=None):
     """
     Triggered on Sales Invoice submit
     """
+    whatsapp_settings = frappe.get_doc("Whatsapp Setting")
+
+    if not whatsapp_settings.delivery_note:
+        return
+        
     result = send_whatsapp_message(doc.name, doc.doctype)
 
     if result.get("status") == "Sent":
