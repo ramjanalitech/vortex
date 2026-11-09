@@ -32,21 +32,38 @@ doc_events = {
     },
      "Sales Order": {
     "on_submit": "vortex.custom.sales_order.sales_order"
-    }
+    },
+    "Sales Invoice": {
+        "on_submit": [
+            "vortex.custom.generate_pdf_and_send_whatsapp_on_submit",
+            "vortex.custom.sales_invoice_email.notify_sales_persons",
+        ],
+    },
 }
 
-doc_events = {
-    "Sales Invoice": {
-        "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
-    }
+doctype_list_js = {
+    "Custom Field": "vortex/custom_field.js",
+    "Property Setter": "vortex/property_setter.js",
 }
+
+# doc_events = {
+#     "Sales Invoice": {
+#         "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
+#     }
+# }
 scheduler_events = {
     "daily": [
         "vortex.custom.sales_invoice.schedule_overdue_sales_invoice_whatsapp"
     ]
 }
 
-
+scheduler_events = {
+    "cron": {
+        "0 8 * * *": [
+            "vortex.daily_digest.scheduler.send_daily_digest"
+        ]
+    }
+}
 
 # include js, css files in header of web template
 # web_include_css = "/assets/vortex/css/vortex.css"
