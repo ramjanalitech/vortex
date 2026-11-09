@@ -35,7 +35,7 @@ doc_events = {
     },
     "Sales Invoice": {
         "on_submit": [
-            "vortex.custom.generate_pdf_and_send_whatsapp_on_submit",
+            # "vortex.custom.generate_pdf_and_send_whatsapp_on_submit",
             "vortex.custom.sales_invoice_email.notify_sales_persons",
         ],
     },
@@ -46,11 +46,11 @@ doctype_list_js = {
     "Property Setter": "vortex/property_setter.js",
 }
 
-# doc_events = {
-#     "Sales Invoice": {
-#         "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
-#     }
-# }
+doc_events = {
+    "Sales Invoice": {
+        "on_submit": "vortex.custom.sales_invoice.generate_pdf_and_send_whatsapp_on_submit"
+    }
+}
 scheduler_events = {
     "daily": [
         "vortex.custom.sales_invoice.schedule_overdue_sales_invoice_whatsapp"
