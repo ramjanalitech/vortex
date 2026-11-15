@@ -9,6 +9,11 @@ from frappe import _
 
 @frappe.whitelist()
 def generate_pdf_and_send_whatsapp_on_submit_payment(doc, method=None):
+    whatsapp_settings = frappe.get_doc("Whatsapp Setting")
+
+    if not whatsapp_settings.payment_entry:
+        return
+
     result = send_whatsapp_message_payment(doc.name, "Payment Entry")
     if result.get("status") == "Sent":
         frappe.msgprint(_("WhatsApp message sent successfully to {0}").format(result.get("mobile")))
