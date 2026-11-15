@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "creation": "2026-11-03 03:59:52.282662",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "company",
+  "send_time",
+  "recipients",
+  "reports"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "default": "08:00:00",
+   "fieldname": "send_time",
+   "fieldtype": "Time",
+   "label": "Send Time"
+  },
+  {
+   "fieldname": "recipients",
+   "fieldtype": "Table",
+   "label": "Recipients",
+   "options": "Daily Digest Recipient"
+  },
+  {
+   "fieldname": "reports",
+   "fieldtype": "Table",
+   "label": "Reports",
+   "options": "Daily Digest Report"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-11-03 04:30:59.684429",
+ "modified_by": "Administrator",
+ "module": "Vortex",
+ "name": "Daily Digest Setting",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
